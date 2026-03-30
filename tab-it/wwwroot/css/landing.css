@@ -1,0 +1,166 @@
+.coffee-landing-page,
+.coffee-landing-page main,
+.coffee-landing-page .container-fluid {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.ij-landing {
+  min-height: 100vh;
+  padding: 0;
+}
+
+.ij-window {
+  min-height: 100vh;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 85% -10%, rgba(255, 168, 93, 0.22), transparent 42%),
+    radial-gradient(circle at 5% 0%, rgba(204, 138, 71, 0.2), transparent 36%),
+    linear-gradient(180deg, #221d1a 0%, #171412 100%);
+}
+
+.ij-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid #41372f;
+  background: #2a221d;
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-red {
+  background: #ff5f57;
+}
+
+.dot-yellow {
+  background: #febc2e;
+}
+
+.dot-green {
+  background: #28c840;
+}
+
+.ij-window-title {
+  margin-left: 0.4rem;
+  color: #d4c7bc;
+  font-size: 0.9rem;
+}
+
+.ij-content {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2.25rem 1.5rem;
+}
+
+.ij-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ij-logo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #120f0d;
+  padding: 0.45rem;
+  border: 1px solid #4b3d33;
+}
+
+.ij-brand h1 {
+  margin: 0;
+  color: #fff4e8;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  letter-spacing: 0.01em;
+}
+
+.ij-brand p {
+  margin: 0.35rem 0 0;
+  color: #d8c7b8;
+}
+
+.ij-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+}
+
+.ij-btn {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ij-btn-primary {
+  color: #2b1f16;
+  background: linear-gradient(90deg, #ffb266, #ffd8a8);
+}
+
+.ij-btn-primary:hover {
+  color: #2b1f16;
+  filter: brightness(1.04);
+}
+
+.ij-btn-secondary {
+  color: #ead8c7;
+  background: #3b3028;
+  border-color: #564537;
+}
+
+.ij-btn-secondary:hover {
+  color: #fff5ea;
+  background: #4a3b31;
+}
+
+.ij-panels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.3rem;
+}
+
+.ij-panel {
+  border: 1px solid #564537;
+  border-radius: 10px;
+  padding: 0.95rem;
+  background: rgba(47, 37, 30, 0.78);
+}
+
+.ij-panel h2 {
+  margin: 0;
+  color: #ffd2a5;
+  font-size: 1rem;
+}
+
+.ij-panel p {
+  margin: 0.55rem 0 0;
+  color: #decdbf;
+}
+
+@media (max-width: 900px) {
+  .ij-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .ij-content {
+    padding: 1rem;
+  }
+
+  .ij-brand {
+    align-items: flex-start;
+  }
+}

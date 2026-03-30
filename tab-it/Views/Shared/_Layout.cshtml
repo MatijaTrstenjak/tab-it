@@ -8,8 +8,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/tab_it.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+@{
+    var hideShell = (ViewData["HideShell"] as bool?) == true;
+    var bodyClass = ViewData["BodyClass"] as string ?? string.Empty;
+}
+<body class="@bodyClass">
+    @if (!hideShell)
+    {
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -31,17 +38,21 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    }
+    <div class="@(hideShell ? "container-fluid p-0" : "container")">
+        <main role="main" class="@(hideShell ? "" : "pb-3")">
             @RenderBody()
         </main>
     </div>
 
+    @if (!hideShell)
+    {
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2026 - tab_it - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    }
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
