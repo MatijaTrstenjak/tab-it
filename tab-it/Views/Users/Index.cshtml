@@ -1,0 +1,21 @@
+@model IReadOnlyList<User>
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Users</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Users</h1>
+    <table class="table app-table">
+        <thead><tr><th>Id</th><th>Name</th><th>Username</th><th>Email</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td><td>@user.FirstName @user.LastName</td><td>@user.Username</td><td>@user.Email</td>
+                <td><a asp-action="Details" asp-route-id="@user.Id">Details</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

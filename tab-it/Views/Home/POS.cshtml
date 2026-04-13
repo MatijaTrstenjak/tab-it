@@ -1,0 +1,386 @@
+@{
+    ViewData["Title"] = "POS Terminal";
+    ViewData["HideShell"] = true;
+    Layout = "_Layout";
+}
+@using tab_it.Models.Domain
+@using System.Text.Json
+
+<style>
+    :root {
+        --pos-bg: #F9F6F0; /* warm beige */
+        --pos-card: #FFFFFF;
+        --pos-border: #000000;
+        --pos-accent: #E88B00; /* warm orange */
+        --pos-text: #1C1C1C;
+        --pos-radius: 12px;
+        --pos-pill: 9999px;
+    }
+
+    body.pos-mode {
+        background-color: var(--pos-bg);
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        color: var(--pos-text);
+        overflow: hidden; /* Prevent body scrolling if possible */
+    }
+
+    .pos-container {
+        display: grid;
+        grid-template-columns: 200px 1fr 300px;
+        height: 100vh;
+        width: 100vw;
+        gap: 1rem;
+        padding: 1rem;
+        box-sizing: border-box;
+        background-color: var(--pos-bg);
+    }
+
+    /* Common Card Styles */
+    .pos-panel {
+        background: var(--pos-card);
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-radius);
+        padding: 1rem;
+        box-shadow: 4px 4px 0px rgba(0,0,0,1); /* Neo-brutalist touch */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .pos-panel-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--pos-border);
+    }
+
+    /* Left: Categories */
+    .pos-categories {
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .category-btn {
+        background: var(--pos-bg);
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-pill);
+        padding: 0.75rem 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+    }
+    .category-btn:hover {
+        background: var(--pos-accent);
+        color: #fff;
+    }
+    .category-btn.active {
+        background: var(--pos-accent);
+        color: #fff;
+        box-shadow: 2px 2px 0px rgba(0,0,0,1);
+    }
+
+    /* Middle: Products */
+    .pos-products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+        overflow-y: auto;
+        align-content: start;
+        padding-bottom: 1rem;
+    }
+
+    .product-card {
+        background: var(--pos-card);
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-radius);
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 120px;
+        user-select: none;
+    }
+    .product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 0px rgba(0,0,0,1);
+    }
+    .product-card:active {
+        transform: translateY(2px);
+        box-shadow: 0px 0px 0px rgba(0,0,0,1);
+    }
+    .product-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    .product-price {
+        font-weight: 800;
+        color: var(--pos-accent);
+        margin-top: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    /* Right: Receipt */
+    .pos-receipt {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .receipt-items {
+        flex: 1;
+        overflow-y: auto;
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-radius);
+        padding: 0.5rem;
+        background: var(--pos-bg);
+        margin-bottom: 1rem;
+    }
+    .receipt-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px dashed var(--pos-border);
+    }
+    .receipt-item:last-child {
+        border-bottom: none;
+    }
+    .item-qty {
+        font-weight: bold;
+        margin-right: 0.5rem;
+        background: var(--pos-border);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.9em;
+    }
+    .item-name {
+        flex: 1;
+        font-weight: 600;
+    }
+    .item-total {
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
+
+    .receipt-total {
+        font-size: 1.5rem;
+        font-weight: 800;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid var(--pos-border);
+    }
+
+    .btn-checkout {
+        background: var(--pos-accent);
+        color: #fff;
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-pill);
+        padding: 1.25rem;
+        font-weight: 900;
+        font-size: 1.25rem;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 4px 4px 0px rgba(0,0,0,1);
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        margin-top: auto;
+    }
+    .btn-checkout:active {
+        transform: translateY(4px);
+        box-shadow: 0px 0px 0px rgba(0,0,0,1);
+    }
+    .btn-checkout:hover {
+        filter: brightness(1.05);
+    }
+
+    /* Header Nav in POS */
+    .pos-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--pos-border);
+    }
+    .pos-nav-logo {
+        font-weight: 900;
+        font-size: 1.25rem;
+        color: var(--pos-text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .pos-nav-exit {
+        font-weight: bold;
+        color: var(--pos-text);
+        text-decoration: none;
+        border: 2px solid var(--pos-border);
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--pos-pill);
+        transition: background 0.2s;
+        font-size: 0.9rem;
+    }
+    .pos-nav-exit:hover {
+        background: #f0f0f0;
+    }
+</style>
+
+<div class="pos-container">
+    <!-- Categories -->
+    <div class="pos-panel">
+        <div class="pos-nav">
+            <a href="/" class="pos-nav-logo">
+                <img src="~/images/tab-it.svg" width="20" height="20" alt="" />
+                <span>tab_it</span>
+            </a>
+            <a href="/" class="pos-nav-exit">Exit</a>
+        </div>
+        <h2 class="pos-panel-title">Categories</h2>
+        <div class="pos-categories" id="categoryList">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Products -->
+    <div class="pos-panel">
+        <h2 class="pos-panel-title" id="currentCategoryTitle">All Items</h2>
+        <div class="pos-products" id="productList">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Receipt -->
+    <div class="pos-panel pos-receipt">
+        <h2 class="pos-panel-title">Current Order</h2>
+        <div class="receipt-items" id="receiptList">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div class="receipt-total">
+            <span>Total</span>
+            <span id="receiptTotal">$0.00</span>
+        </div>
+
+        <button class="btn-checkout" onclick="checkout()">Pay / Charge</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.body.classList.add('pos-mode');
+
+        // Data from Repositories
+        const categories = @Html.Raw(JsonSerializer.Serialize(ViewData["Categories"] ?? new List<ProductCategory>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
+        const products = @Html.Raw(JsonSerializer.Serialize(ViewData["Products"] ?? new List<Product>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
+
+        let currentCategoryId = null;
+        let order = [];
+
+        function renderCategories() {
+            const list = document.getElementById('categoryList');
+            list.innerHTML = '';
+            
+            const allBtn = document.createElement('button');
+            allBtn.className = 'category-btn' + (currentCategoryId === null ? ' active' : '');
+            allBtn.innerText = 'All Items';
+            allBtn.onclick = () => selectCategory(null, 'All Items');
+            list.appendChild(allBtn);
+
+            categories.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn' + (currentCategoryId === c.id ? ' active' : '');
+                btn.innerText = c.name;
+                btn.onclick = () => selectCategory(c.id, c.name);
+                list.appendChild(btn);
+            });
+        }
+
+        function selectCategory(id, name) {
+            currentCategoryId = id;
+            document.getElementById('currentCategoryTitle').innerText = name;
+            renderCategories();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
+            
+            const filtered = currentCategoryId 
+                ? products.filter(p => p.productCategoryId === currentCategoryId)
+                : products;
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => addToOrder(p);
+                card.innerHTML = `
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-price">$${p.unitPrice.toFixed(2)}</div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function addToOrder(product) {
+            const existing = order.find(item => item.product.id === product.id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                order.push({ product, qty: 1 });
+            }
+            renderReceipt();
+        }
+
+        function renderReceipt() {
+            const list = document.getElementById('receiptList');
+            list.innerHTML = '';
+            
+            let total = 0;
+
+            order.forEach(item => {
+                const itemTotal = item.product.unitPrice * item.qty;
+                total += itemTotal;
+                
+                const div = document.createElement('div');
+                div.className = 'receipt-item';
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <span class="item-qty">${item.qty}</span>
+                        <span class="item-name">${item.product.name}</span>
+                    </div>
+                    <span class="item-total">$${itemTotal.toFixed(2)}</span>
+                `;
+                list.appendChild(div);
+            });
+
+            document.getElementById('receiptTotal').innerText = '$' + total.toFixed(2);
+        }
+
+        function checkout() {
+            if (order.length === 0) {
+                alert("Cart is empty!");
+                return;
+            }
+            alert("Checkout complete!\\n\\nIntegration pending for backend systems.");
+            order = [];
+            renderReceipt();
+        }
+
+        // Initialize
+        renderCategories();
+        renderProducts();
+        renderReceipt();
+    </script>
+}

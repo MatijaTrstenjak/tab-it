@@ -15,43 +15,65 @@
     var bodyClass = ViewData["BodyClass"] as string ?? string.Empty;
 }
 <body class="@bodyClass">
+    <a class="app-skip-link" href="#app-main-content">Skip to main content</a>
     @if (!hideShell)
     {
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">tab_it</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    }
-    <div class="@(hideShell ? "container-fluid p-0" : "container")">
-        <main role="main" class="@(hideShell ? "" : "pb-3")">
-            @RenderBody()
-        </main>
-    </div>
+    <div class="app-shell">
+        <aside class="app-sidebar" aria-label="Primary">
+            <a class="app-brand" asp-area="" asp-controller="Home" asp-action="Dashboard" style="display: flex; align-items: center; gap: 8px;">
+                <img src="~/images/tab-it.svg" width="24" height="24" alt="tab_it logo" />
+                <span>tab_it</span>
+            </a>
+            <nav class="app-menu" aria-label="Main menu" id="app-main-menu">
+                <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+                <a asp-controller="Roles" asp-action="Index">Roles</a>
+                <a asp-controller="Users" asp-action="Index">Users</a>
+                <a asp-controller="ProductCategories" asp-action="Index">Product Categories</a>
+                <a asp-controller="Products" asp-action="Index">Products</a>
+                <a asp-controller="CustomerTabs" asp-action="Index">Customer Tabs</a>
+                <a asp-controller="Orders" asp-action="Index">Orders</a>
+                <a asp-controller="OrderItems" asp-action="Index">Order Items</a>
+            </nav>
+        </aside>
 
-    @if (!hideShell)
-    {
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - tab_it - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="app-main-shell">
+            <header class="app-top-row" role="banner">
+                <button class="app-menu-toggle" type="button" aria-controls="app-main-menu" aria-expanded="false">Menu</button>
+            </header>
+
+            <section class="app-breadcrumb-row" aria-label="Breadcrumbs">
+                @if (IsSectionDefined("Breadcrumbs"))
+                {
+                    @RenderSection("Breadcrumbs", required: false)
+                }
+                else
+                {
+                    <nav aria-label="breadcrumb" class="app-breadcrumbs">
+                        <ol>
+                            <li><a asp-controller="Home" asp-action="Dashboard">Home</a></li>
+                        </ol>
+                    </nav>
+                }
+            </section>
+
+            <main role="main" class="app-main-content" id="app-main-content">
+                @RenderBody()
+            </main>
+
+            <footer class="app-footer text-muted">
+                <span>&copy; 2026 - tab_it</span>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </footer>
         </div>
-    </footer>
+    </div>
+    }
+    @if (hideShell)
+    {
+        <div class="container-fluid p-0">
+            <main role="main">
+                @RenderBody()
+            </main>
+        </div>
     }
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,21 @@
+@model IReadOnlyList<Order>
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Orders</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Orders</h1>
+    <table class="table app-table">
+        <thead><tr><th>Id</th><th>Number</th><th>Status</th><th>Total</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td><td>@order.OrderNumber</td><td>@order.Status</td><td>@order.Total.ToString("F2")</td>
+                <td><a asp-action="Details" asp-route-id="@order.Id">Details</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

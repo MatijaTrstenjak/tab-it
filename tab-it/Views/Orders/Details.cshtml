@@ -1,0 +1,20 @@
+@model Order
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li><a asp-action="Index">Orders</a></li><li aria-current="page">Details</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Order Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Id</dd>
+        <dt class="col-sm-3">Order Number</dt><dd class="col-sm-9">@Model.OrderNumber</dd>
+        <dt class="col-sm-3">Ordered At</dt><dd class="col-sm-9">@Model.OrderedAt</dd>
+        <dt class="col-sm-3">Status</dt><dd class="col-sm-9">@Model.Status</dd>
+        <dt class="col-sm-3">Subtotal</dt><dd class="col-sm-9">@Model.Subtotal.ToString("F2") EUR</dd>
+        <dt class="col-sm-3">Discount</dt><dd class="col-sm-9">@Model.DiscountPercent%</dd>
+        <dt class="col-sm-3">Total</dt><dd class="col-sm-9">@Model.Total.ToString("F2") EUR</dd>
+        <dt class="col-sm-3">Customer Tab</dt><dd class="col-sm-9"><a asp-controller="CustomerTabs" asp-action="Details" asp-route-id="@Model.CustomerTabId">Tab @Model.CustomerTabId</a></dd>
+    </dl>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to list</a>
+</section>

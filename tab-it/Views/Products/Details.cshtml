@@ -1,0 +1,19 @@
+@model Product
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li><a asp-action="Index">Products</a></li><li aria-current="page">Details</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Product Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Id</dd>
+        <dt class="col-sm-3">Name</dt><dd class="col-sm-9">@Model.Name</dd>
+        <dt class="col-sm-3">SKU</dt><dd class="col-sm-9">@Model.Sku</dd>
+        <dt class="col-sm-3">Unit Price</dt><dd class="col-sm-9">@Model.UnitPrice.ToString("F2") EUR</dd>
+        <dt class="col-sm-3">Alcoholic</dt><dd class="col-sm-9">@Model.IsAlcoholic</dd>
+        <dt class="col-sm-3">Available Qty</dt><dd class="col-sm-9">@Model.AvailableQuantity</dd>
+        <dt class="col-sm-3">Category</dt><dd class="col-sm-9"><a asp-controller="ProductCategories" asp-action="Details" asp-route-id="@Model.ProductCategoryId">Category @Model.ProductCategoryId</a></dd>
+    </dl>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to list</a>
+</section>

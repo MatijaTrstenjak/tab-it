@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Operations Dashboard";
+}
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs">
+        <ol>
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li aria-current="page">Dashboard</li>
+        </ol>
+    </nav>
+}
+
+<section class="entity-grid">
+    <a class="entity-tile" asp-controller="Roles" asp-action="Index"><h2>Roles</h2><p>List and details</p></a>
+    <a class="entity-tile" asp-controller="Users" asp-action="Index"><h2>Users</h2><p>List and details</p></a>
+    <a class="entity-tile" asp-controller="ProductCategories" asp-action="Index"><h2>Product Categories</h2><p>List and details</p></a>
+    <a class="entity-tile" asp-controller="Products" asp-action="Index"><h2>Products</h2><p>List and details</p></a>
+    <a class="entity-tile" asp-controller="CustomerTabs" asp-action="Index"><h2>Customer Tabs</h2><p>List and details</p></a>
+    <a class="entity-tile" asp-controller="Orders" asp-action="Index"><h2>Orders</h2><p>List and details</p></a>
+    <a class="entity-tile" asp-controller="OrderItems" asp-action="Index"><h2>Order Items</h2><p>List and details</p></a>
+</section>

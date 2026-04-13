@@ -1,0 +1,21 @@
+@model IReadOnlyList<CustomerTab>
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Customer Tabs</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Customer Tabs</h1>
+    <table class="table app-table">
+        <thead><tr><th>Id</th><th>Code</th><th>Table</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var tab in Model)
+        {
+            <tr>
+                <td>@tab.Id</td><td>@tab.TabCode</td><td>@tab.TableNumber</td><td>@tab.Status</td>
+                <td><a asp-action="Details" asp-route-id="@tab.Id">Details</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

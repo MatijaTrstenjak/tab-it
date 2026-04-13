@@ -1,0 +1,21 @@
+@model IReadOnlyList<ProductCategory>
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Product Categories</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Product Categories</h1>
+    <table class="table app-table">
+        <thead><tr><th>Id</th><th>Name</th><th>Description</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Id</td><td>@category.Name</td><td>@category.Description</td>
+                <td><a asp-action="Details" asp-route-id="@category.Id">Details</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

@@ -1,0 +1,19 @@
+@model CustomerTab
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li><a asp-action="Index">Customer Tabs</a></li><li aria-current="page">Details</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Tab Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Id</dd>
+        <dt class="col-sm-3">Tab Code</dt><dd class="col-sm-9">@Model.TabCode</dd>
+        <dt class="col-sm-3">Table Number</dt><dd class="col-sm-9">@Model.TableNumber</dd>
+        <dt class="col-sm-3">Opened</dt><dd class="col-sm-9">@Model.OpenedAt</dd>
+        <dt class="col-sm-3">Closed</dt><dd class="col-sm-9">@(Model.ClosedAt?.ToString() ?? "-")</dd>
+        <dt class="col-sm-3">Status</dt><dd class="col-sm-9">@Model.Status</dd>
+        <dt class="col-sm-3">Opened By User</dt><dd class="col-sm-9"><a asp-controller="Users" asp-action="Details" asp-route-id="@Model.OpenedByUserId">User @Model.OpenedByUserId</a></dd>
+    </dl>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to list</a>
+</section>

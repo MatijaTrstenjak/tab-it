@@ -8,43 +8,21 @@
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
 }
 
-<section class="ij-landing">
-    <div class="ij-window">
-        <div class="ij-window-bar">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-            <span class="ij-window-title">tab-it | Coffee Shop Operations Hub</span>
-        </div>
+<section class="ux-landing">
+    <main class="ux-hero" role="main">
+        <div class="ux-hero-content">
+            <p class="ux-kicker">tab-it | Store Operations</p>
+            <h1>Run every shift with calm clarity.</h1>
+            <p class="ux-lead">tab-it brings inventory, POS, team status, and sales performance into one responsive workspace for fast daily decisions.</p>
 
-        <div class="ij-content">
-            <div class="ij-brand">
-                <img src="~/images/tab-it.svg" alt="tab-it logo" class="ij-logo" />
-                <div>
-                    <h1>tab-it</h1>
-                    <p>One dashboard for inventory, POS, staff shifts, and daily sales.</p>
-                </div>
-            </div>
-
-            <div class="ij-actions" aria-label="Primary actions">
-                <a class="ij-btn ij-btn-primary" asp-controller="Home" asp-action="Privacy">Start Shift</a>
-                <a class="ij-btn ij-btn-secondary" asp-controller="Home" asp-action="Privacy">Check Inventory</a>
-            </div>
-
-            <div class="ij-panels">
-                <article class="ij-panel">
-                    <h2>Inventory</h2>
-                    <p>Track beans, milk, syrups, cups, and reorder thresholds in real time.</p>
-                </article>
-                <article class="ij-panel">
-                    <h2>POS</h2>
-                    <p>Handle dine-in and takeaway orders fast with clear ticket flow.</p>
-                </article>
-                <article class="ij-panel">
-                    <h2>Reports</h2>
-                    <p>Review top products, peak hours, and shift revenue at a glance.</p>
-                </article>
+            <div class="ux-actions" aria-label="Primary actions">
+                <a class="ux-btn ux-btn-primary" asp-controller="Home" asp-action="Dashboard">Open Dashboard</a>
+                <a class="ux-btn ux-btn-secondary" asp-controller="Home" asp-action="POS" style="margin-left: 1rem; background-color: #E88B00; color: #fff; border: 2px solid #000; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 999px; font-weight: bold; box-shadow: 4px 4px 0px rgba(0,0,0,1); transition: transform 0.1s ease, box-shadow 0.1s ease;">Launch POS</a>
             </div>
         </div>
-    </div>
+        
+        <div class="ux-hero-image">
+            <img src="~/images/landing-coffee.jpg" alt="Rich espresso and fresh coffee beans on a wooden table" />
+        </div>
+    </main>
 </section>

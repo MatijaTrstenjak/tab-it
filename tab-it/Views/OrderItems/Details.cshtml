@@ -1,0 +1,19 @@
+@model OrderItem
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li><a asp-action="Index">Order Items</a></li><li aria-current="page">Details</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>Order Item Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Id</dd>
+        <dt class="col-sm-3">Order</dt><dd class="col-sm-9"><a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId">Order @Model.OrderId</a></dd>
+        <dt class="col-sm-3">Product</dt><dd class="col-sm-9"><a asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">Product @Model.ProductId</a></dd>
+        <dt class="col-sm-3">Quantity</dt><dd class="col-sm-9">@Model.Quantity</dd>
+        <dt class="col-sm-3">Unit Price</dt><dd class="col-sm-9">@Model.UnitPrice.ToString("F2") EUR</dd>
+        <dt class="col-sm-3">Line Total</dt><dd class="col-sm-9">@Model.LineTotal.ToString("F2") EUR</dd>
+        <dt class="col-sm-3">Item Note</dt><dd class="col-sm-9">@Model.ItemNote</dd>
+    </dl>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to list</a>
+</section>

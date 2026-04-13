@@ -1,0 +1,18 @@
+@model User
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li><a asp-action="Index">Users</a></li><li aria-current="page">Details</li></ol></nav>
+}
+
+<section class="app-panel">
+    <h1>User Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Id</dd>
+        <dt class="col-sm-3">Name</dt><dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+        <dt class="col-sm-3">Username</dt><dd class="col-sm-9">@Model.Username</dd>
+        <dt class="col-sm-3">Email</dt><dd class="col-sm-9">@Model.Email</dd>
+        <dt class="col-sm-3">Active</dt><dd class="col-sm-9">@Model.IsActive</dd>
+        <dt class="col-sm-3">Role</dt><dd class="col-sm-9"><a asp-controller="Roles" asp-action="Details" asp-route-id="@Model.RoleId">Role @Model.RoleId</a></dd>
+    </dl>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to list</a>
+</section>

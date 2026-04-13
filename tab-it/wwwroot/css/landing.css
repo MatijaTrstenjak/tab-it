@@ -1,166 +1,202 @@
+:root {
+  --ux-bg-top: #F9F6F0;
+  --ux-bg-bottom: #F3EFE6;
+  --ux-surface: #ffffff;
+  --ux-surface-strong: #ffffff;
+  --ux-text: #1a1a1a;
+  --ux-text-muted: #595959;
+  --ux-brand-600: #E88B00;
+  --ux-brand-700: #CC7A00;
+  --ux-brand-200: #FFF3E0;
+  --ux-border: #000000;
+  --ux-focus: #E88B00;
+  --ux-shadow-1: 3px 3px 0px rgba(0, 0, 0, 1);
+  --ux-shadow-2: 5px 5px 0px rgba(0, 0, 0, 1);
+  --ux-radius-1: 12px;
+  --ux-radius-2: 12px;
+  --ux-space-1: 0.5rem;
+  --ux-space-2: 0.75rem;
+  --ux-space-3: 1rem;
+  --ux-space-4: 1.25rem;
+  --ux-space-5: 1.75rem;
+  --ux-space-6: 2.25rem;
+}
+
 .coffee-landing-page,
 .coffee-landing-page main,
 .coffee-landing-page .container-fluid {
-  min-height: 100vh;
+  height: 100vh;
   overflow: hidden;
 }
 
-.ij-landing {
-  min-height: 100vh;
-  padding: 0;
-}
-
-.ij-window {
-  min-height: 100vh;
-  border: 0;
-  border-radius: 0;
+.ux-landing {
+  position: relative;
+  height: 100vh;
   overflow: hidden;
+  padding: var(--ux-space-2);
   background:
-    radial-gradient(circle at 85% -10%, rgba(255, 168, 93, 0.22), transparent 42%),
-    radial-gradient(circle at 5% 0%, rgba(204, 138, 71, 0.2), transparent 36%),
-    linear-gradient(180deg, #221d1a 0%, #171412 100%);
-}
-
-.ij-window-bar {
+    radial-gradient(circle at 100% -8%, rgba(232, 139, 0, 0.1), transparent 44%),
+    radial-gradient(circle at 10% -2%, rgba(255, 243, 224, 0.55), transparent 34%),
+    linear-gradient(162deg, var(--ux-bg-top), var(--ux-bg-bottom));
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 0.85rem;
-  border-bottom: 1px solid #41372f;
-  background: #2a221d;
+  justify-content: center;
 }
 
-.dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.dot-red {
-  background: #ff5f57;
-}
-
-.dot-yellow {
-  background: #febc2e;
-}
-
-.dot-green {
-  background: #28c840;
-}
-
-.ij-window-title {
-  margin-left: 0.4rem;
-  color: #d4c7bc;
-  font-size: 0.9rem;
-}
-
-.ij-content {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 2.25rem 1.5rem;
-}
-
-.ij-brand {
+.ux-hero {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  gap: var(--ux-space-4);
+  max-width: 1200px;
+  width: 100%;
+  padding: var(--ux-space-4);
+  color: var(--ux-text);
+  font-family: "SF Pro Text", "Avenir Next", "Segoe UI", sans-serif;
+  animation: ux-fade-up 420ms ease both;
 }
 
-.ij-logo {
-  width: 84px;
-  height: 84px;
-  object-fit: contain;
-  border-radius: 10px;
-  background: #120f0d;
-  padding: 0.45rem;
-  border: 1px solid #4b3d33;
+.ux-hero-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.ij-brand h1 {
+.ux-kicker {
   margin: 0;
-  color: #fff4e8;
-  font-size: clamp(1.7rem, 4vw, 2.4rem);
-  letter-spacing: 0.01em;
+  color: var(--ux-brand-600);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.ij-brand p {
-  margin: 0.35rem 0 0;
-  color: #d8c7b8;
+.ux-hero-content h1 {
+  margin: 0.5rem 0 0;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--ux-text);
 }
 
-.ij-actions {
+.ux-lead {
+  margin: var(--ux-space-3) 0 0;
+  color: var(--ux-text-muted);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 50ch;
+}
+
+.ux-actions {
+  margin-top: var(--ux-space-5);
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.2rem;
+  gap: var(--ux-space-3);
 }
 
-.ij-btn {
-  display: inline-block;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  border: 1px solid transparent;
+.ux-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border: 2px solid var(--ux-border);
+  border-radius: 999px;
   text-decoration: none;
   font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
-.ij-btn-primary {
-  color: #2b1f16;
-  background: linear-gradient(90deg, #ffb266, #ffd8a8);
+.ux-btn:focus-visible {
+  outline: 3px solid var(--ux-focus);
+  outline-offset: 3px;
 }
 
-.ij-btn-primary:hover {
-  color: #2b1f16;
-  filter: brightness(1.04);
+.ux-btn-primary {
+  background: var(--ux-brand-600);
+  color: #ffffff;
+  border-color: var(--ux-border);
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 1);
 }
 
-.ij-btn-secondary {
-  color: #ead8c7;
-  background: #3b3028;
-  border-color: #564537;
+.ux-btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 1);
 }
 
-.ij-btn-secondary:hover {
-  color: #fff5ea;
-  background: #4a3b31;
+.ux-btn-primary:hover {
+  background: var(--ux-brand-700);
 }
 
-.ij-panels {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.8rem;
-  margin-top: 1.3rem;
+.ux-hero-image {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: var(--ux-radius-2);
+  border: 2px solid var(--ux-border);
+  box-shadow: var(--ux-shadow-1);
+  overflow: hidden;
+  background: var(--ux-surface);
 }
 
-.ij-panel {
-  border: 1px solid #564537;
-  border-radius: 10px;
-  padding: 0.95rem;
-  background: rgba(47, 37, 30, 0.78);
+.ux-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.ij-panel h2 {
-  margin: 0;
-  color: #ffd2a5;
-  font-size: 1rem;
-}
-
-.ij-panel p {
-  margin: 0.55rem 0 0;
-  color: #decdbf;
-}
-
-@media (max-width: 900px) {
-  .ij-panels {
-    grid-template-columns: 1fr;
+@media (min-width: 960px) {
+  .ux-hero {
+    flex-direction: row;
+    height: calc(100vh - (var(--ux-space-4) * 2));
+    max-height: 800px;
+    align-items: stretch;
   }
 
-  .ij-content {
-    padding: 1rem;
+  .ux-hero-content {
+    flex: 1;
+    padding-right: var(--ux-space-6);
+  }
+}
+
+@keyframes ux-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 960px) {
+  .ux-landing {
+    padding: var(--ux-space-6);
   }
 
-  .ij-brand {
-    align-items: flex-start;
+  .ux-hero {
+    flex-direction: row;
+    gap: 4rem;
+    align-items: center;
+    padding: var(--ux-space-6);
+    background: var(--ux-surface);
+    border: 2px solid var(--ux-border);
+    border-radius: var(--ux-radius-2);
+    box-shadow: var(--ux-shadow-2);
+  }
+
+  .ux-hero-content {
+    flex: 1;
+  }
+
+  .ux-hero-image {
+    flex: 1;
+    height: 100%;
+    min-height: 400px;
+    box-shadow: none;
+    border: 2px solid var(--ux-border);
+    border-radius: var(--ux-radius-1);
   }
 }

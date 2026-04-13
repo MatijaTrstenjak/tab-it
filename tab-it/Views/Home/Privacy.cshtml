@@ -1,6 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs">
+        <ol>
+            <li><a asp-controller="Home" asp-action="Dashboard">Home</a></li>
+            <li aria-current="page">Privacy</li>
+        </ol>
+    </nav>
+}
+
+<section class="app-panel">
+    <h1>@ViewData["Title"]</h1>
+    <p class="app-panel-lead">This page summarizes how operational data is handled in this read-only lab environment.</p>
+    <p>No personal data is modified through this interface, and navigation is limited to view-only records for demonstration purposes.</p>
+</section>
