@@ -29,4 +29,24 @@ public class RolesController : Controller
         ViewData["Title"] = "Role Details";
         return View(role);
     }
+
+    public IActionResult Create()
+    {
+        ViewData["Title"] = "Create Role";
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(tab_it.Models.Domain.Role role)
+    {
+        if (ModelState.IsValid)
+        {
+            _roleRepository.Add(role);
+            return RedirectToAction(nameof(Index));
+        }
+        
+        ViewData["Title"] = "Create Role";
+        return View(role);
+    }
 }

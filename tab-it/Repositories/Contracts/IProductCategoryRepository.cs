@@ -6,4 +6,5 @@ public interface IProductCategoryRepository
 {
     IReadOnlyList<ProductCategory> GetAll();
     ProductCategory? GetById(int id);
+    void Add(ProductCategory category);
 }

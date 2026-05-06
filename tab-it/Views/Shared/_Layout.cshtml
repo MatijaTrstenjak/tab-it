@@ -78,6 +78,22 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <!-- Global Bootstrap Modal for Dynamic Form Loading -->
+    <div class="modal fade" id="globalFormModal" tabindex="-1" aria-labelledby="globalFormModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="globalFormModalLabel">Add New</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="globalFormModalBody">
+            <div class="text-center">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

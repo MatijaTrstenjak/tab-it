@@ -29,4 +29,24 @@ public class OrdersController : Controller
         ViewData["Title"] = "Order Details";
         return View(order);
     }
+
+    public IActionResult Create()
+    {
+        ViewData["Title"] = "Create Order";
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(tab_it.Models.Domain.Order order)
+    {
+        if (ModelState.IsValid)
+        {
+            _orderRepository.Add(order);
+            return RedirectToAction(nameof(Index));
+        }
+        
+        ViewData["Title"] = "Create Order";
+        return View(order);
+    }
 }

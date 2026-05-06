@@ -89,4 +89,10 @@ public class MockProductRepository : IProductRepository
     public IReadOnlyList<Product> GetAll() => Products;
 
     public Product? GetById(int id) => Products.SingleOrDefault(p => p.Id == id);
+
+    public void Add(Product product)
+    {
+        product.Id = Products.Max(p => p.Id) + 1;
+        ((List<Product>)Products).Add(product);
+    }
 }

@@ -52,4 +52,8 @@ public class MockOrderItemRepository : IOrderItemRepository
     public IReadOnlyList<OrderItem> GetAll() => OrderItems;
 
     public OrderItem? GetById(int id) => OrderItems.SingleOrDefault(oi => oi.Id == id);
-}
+    public void Add(OrderItem orderItem)
+    {
+        orderItem.Id = OrderItems.Max(i => i.Id) + 1;
+        ((List<OrderItem>)OrderItems).Add(orderItem);
+    }}

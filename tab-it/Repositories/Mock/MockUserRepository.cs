@@ -48,4 +48,10 @@ public class MockUserRepository : IUserRepository
     public IReadOnlyList<User> GetAll() => Users;
 
     public User? GetById(int id) => Users.SingleOrDefault(u => u.Id == id);
+
+    public void Add(User user)
+    {
+        user.Id = Users.Max(u => u.Id) + 1;
+        ((List<User>)Users).Add(user);
+    }
 }

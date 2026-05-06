@@ -1,0 +1,45 @@
+@model tab_it.Models.Domain.CustomerTab
+
+<h1>Create Customer Tab</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="TabCode" class="control-label"></label>
+                <input asp-for="TabCode" class="form-control" />
+                <span asp-validation-for="TabCode" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="TableNumber" class="control-label"></label>
+                <input asp-for="TableNumber" type="number" class="form-control" />
+                <span asp-validation-for="TableNumber" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="OpenedByUserId" class="control-label">User ID (Waiter/Staff)</label>
+                <input asp-for="OpenedByUserId" type="number" class="form-control" />
+                <span asp-validation-for="OpenedByUserId" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

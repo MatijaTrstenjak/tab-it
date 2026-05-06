@@ -36,4 +36,11 @@ public class MockProductCategoryRepository : IProductCategoryRepository
     public IReadOnlyList<ProductCategory> GetAll() => Categories;
 
     public ProductCategory? GetById(int id) => Categories.SingleOrDefault(c => c.Id == id);
+
+    public void Add(ProductCategory category)
+    {
+        // Mock implementation (read-only list in mock, just fake the ID ideally or do nothing)
+        category.Id = Categories.Max(c => c.Id) + 1;
+        ((List<ProductCategory>)Categories).Add(category);
+    }
 }

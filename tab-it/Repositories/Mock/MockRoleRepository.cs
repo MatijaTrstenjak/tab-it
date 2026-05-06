@@ -24,4 +24,10 @@ public class MockRoleRepository : IRoleRepository
     public IReadOnlyList<Role> GetAll() => Roles;
 
     public Role? GetById(int id) => Roles.SingleOrDefault(r => r.Id == id);
+
+    public void Add(Role role)
+    {
+        role.Id = Roles.Max(r => r.Id) + 1;
+        ((List<Role>)Roles).Add(role);
+    }
 }

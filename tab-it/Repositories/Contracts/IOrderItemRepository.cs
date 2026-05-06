@@ -6,4 +6,5 @@ public interface IOrderItemRepository
 {
     IReadOnlyList<OrderItem> GetAll();
     OrderItem? GetById(int id);
+    void Add(OrderItem orderItem);
 }

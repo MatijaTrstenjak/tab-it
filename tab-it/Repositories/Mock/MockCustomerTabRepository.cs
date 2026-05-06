@@ -43,4 +43,10 @@ public class MockCustomerTabRepository : ICustomerTabRepository
     public IReadOnlyList<CustomerTab> GetAll() => Tabs;
 
     public CustomerTab? GetById(int id) => Tabs.SingleOrDefault(t => t.Id == id);
+
+    public void Add(CustomerTab tab)
+    {
+        tab.Id = Tabs.Max(t => t.Id) + 1;
+        ((List<CustomerTab>)Tabs).Add(tab);
+    }
 }

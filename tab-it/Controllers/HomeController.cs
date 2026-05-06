@@ -18,6 +18,8 @@ namespace tab_it.Controllers
             _productRepository = productRepository;
         }
 
+        [Route("/")]
+        [Route("/pocetna")]
         public IActionResult Index()
         {
             return View();

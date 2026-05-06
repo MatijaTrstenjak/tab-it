@@ -12,11 +12,32 @@
 }
 
 <section class="entity-grid">
-    <a class="entity-tile" asp-controller="Roles" asp-action="Index"><h2>Roles</h2><p>List and details</p></a>
-    <a class="entity-tile" asp-controller="Users" asp-action="Index"><h2>Users</h2><p>List and details</p></a>
-    <a class="entity-tile" asp-controller="ProductCategories" asp-action="Index"><h2>Product Categories</h2><p>List and details</p></a>
-    <a class="entity-tile" asp-controller="Products" asp-action="Index"><h2>Products</h2><p>List and details</p></a>
-    <a class="entity-tile" asp-controller="CustomerTabs" asp-action="Index"><h2>Customer Tabs</h2><p>List and details</p></a>
-    <a class="entity-tile" asp-controller="Orders" asp-action="Index"><h2>Orders</h2><p>List and details</p></a>
-    <a class="entity-tile" asp-controller="OrderItems" asp-action="Index"><h2>Order Items</h2><p>List and details</p></a>
+    <div class="entity-tile">
+        <a asp-controller="Roles" asp-action="Index"><h2>Roles</h2><p>List and details</p></a>
+        <a asp-controller="Roles" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Roles">Add New</a>
+    </div>
+    <div class="entity-tile">
+        <a asp-controller="Users" asp-action="Index"><h2>Users</h2><p>List and details</p></a>
+        <a asp-controller="Users" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Users">Add New</a>
+    </div>
+    <div class="entity-tile">
+        <a asp-controller="ProductCategories" asp-action="Index"><h2>Product Categories</h2><p>List and details</p></a>
+        <a asp-controller="ProductCategories" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Product Categories">Add New</a>
+    </div>
+    <div class="entity-tile">
+        <a asp-controller="Products" asp-action="Index"><h2>Products</h2><p>List and details</p></a>
+        <a asp-controller="Products" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Products">Add New</a>
+    </div>
+    <div class="entity-tile">
+        <a asp-controller="CustomerTabs" asp-action="Index"><h2>Customer Tabs</h2><p>List and details</p></a>
+        <a asp-controller="CustomerTabs" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Customer Tabs">Add New</a>
+    </div>
+    <div class="entity-tile">
+        <a asp-controller="Orders" asp-action="Index"><h2>Orders</h2><p>List and details</p></a>
+        <a asp-controller="Orders" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Orders">Add New</a>
+    </div>
+    <div class="entity-tile">
+        <a asp-controller="OrderItems" asp-action="Index"><h2>Order Items</h2><p>List and details</p></a>
+        <a asp-controller="OrderItems" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Order Items">Add New</a>
+    </div>
 </section>

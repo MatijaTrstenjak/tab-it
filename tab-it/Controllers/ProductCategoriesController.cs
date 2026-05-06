@@ -29,4 +29,26 @@ public class ProductCategoriesController : Controller
         ViewData["Title"] = "Category Details";
         return View(category);
     }
+
+    // GET: ProductCategories/Create
+    public IActionResult Create()
+    {
+        ViewData["Title"] = "Create Category";
+        return View();
+    }
+
+    // POST: ProductCategories/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(tab_it.Models.Domain.ProductCategory category)
+    {
+        if (ModelState.IsValid)
+        {
+            _categoryRepository.Add(category);
+            return RedirectToAction(nameof(Index));
+        }
+        
+        ViewData["Title"] = "Create Category";
+        return View(category);
+    }
 }

@@ -12,6 +12,9 @@ public class UsersController : Controller
         _userRepository = userRepository;
     }
 
+    [Route("/admin/korisnici")]
+    [Route("/Users")]
+    [Route("/Users/Index")]
     public IActionResult Index()
     {
         ViewData["Title"] = "Users";
@@ -27,6 +30,26 @@ public class UsersController : Controller
         }
 
         ViewData["Title"] = "User Details";
+        return View(user);
+    }
+
+    public IActionResult Create()
+    {
+        ViewData["Title"] = "Create User";
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(tab_it.Models.Domain.User user)
+    {
+        if (ModelState.IsValid)
+        {
+            _userRepository.Add(user);
+            return RedirectToAction(nameof(Index));
+        }
+        
+        ViewData["Title"] = "Create User";
         return View(user);
     }
 }

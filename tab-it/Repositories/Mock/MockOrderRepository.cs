@@ -45,4 +45,10 @@ public class MockOrderRepository : IOrderRepository
     public IReadOnlyList<Order> GetAll() => Orders;
 
     public Order? GetById(int id) => Orders.SingleOrDefault(o => o.Id == id);
+
+    public void Add(Order order)
+    {
+        order.Id = Orders.Max(o => o.Id) + 1;
+        ((List<Order>)Orders).Add(order);
+    }
 }

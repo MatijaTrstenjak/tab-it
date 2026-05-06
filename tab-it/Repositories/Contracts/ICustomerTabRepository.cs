@@ -6,4 +6,5 @@ public interface ICustomerTabRepository
 {
     IReadOnlyList<CustomerTab> GetAll();
     CustomerTab? GetById(int id);
+    void Add(CustomerTab tab);
 }

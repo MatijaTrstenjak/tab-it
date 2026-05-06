@@ -5,7 +5,10 @@
 }
 
 <section class="app-panel">
-    <h1>Customer Tabs</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="m-0">Customer Tabs</h1>
+        <a asp-action="Create" class="btn btn-primary ajax-modal-link" data-title="Customer Tabs">Add New</a>
+    </div>
     <table class="table app-table">
         <thead><tr><th>Id</th><th>Code</th><th>Table</th><th>Status</th><th></th></tr></thead>
         <tbody>
