@@ -29,4 +29,22 @@ public class EFUserRepository : IUserRepository
         _context.Users.Add(user);
         _context.SaveChanges();
     }
+
+    public void Update(User user)
+    {
+        _context.Users.Update(user);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var user = _context.Users.Find(id);
+        if (user is null)
+        {
+            return;
+        }
+
+        _context.Users.Remove(user);
+        _context.SaveChanges();
+    }
 }

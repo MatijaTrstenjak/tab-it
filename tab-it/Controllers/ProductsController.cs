@@ -52,4 +52,80 @@ public class ProductsController : Controller
         ViewData["Title"] = "Create Product";
         return View(product);
     }
+
+    public IActionResult Edit(int id)
+    {
+        var product = _productRepository.GetById(id);
+        if (product is null)
+        {
+            return NotFound();
+        }
+
+        ViewData["Title"] = "Edit Product";
+        return View(product);
+    }
+
+    [HttpPost, ActionName("Edit")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditPost(int id)
+    {
+        var product = _productRepository.GetById(id);
+        if (product is null)
+        {
+            return NotFound();
+        }
+
+        var updated = await TryUpdateModelAsync(product);
+        if (updated && ModelState.IsValid)
+        {
+            _productRepository.Update(product);
+            return RedirectToAction(nameof(Index));
+        }
+
+        ViewData["Title"] = "Edit Product";
+        return View(product);
+    }
+
+    public IActionResult Delete(int id)
+    {
+        var product = _productRepository.GetById(id);
+        if (product is null)
+        {
+            return NotFound();
+        }
+
+        ViewData["Title"] = "Delete Product";
+        return View(product);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        var product = _productRepository.GetById(id);
+        if (product is null)
+        {
+            return NotFound();
+        }
+
+        _productRepository.Delete(id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult Search(string? q)
+    {
+        var query = (q ?? string.Empty).Trim();
+        var products = _productRepository.GetAll();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            products = products
+                .Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
+                            || p.Sku.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        return PartialView("_Rows", products);
+    }
 }

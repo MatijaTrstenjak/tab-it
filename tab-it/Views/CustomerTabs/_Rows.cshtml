@@ -1,0 +1,18 @@
+@model IReadOnlyList<CustomerTab>
+
+@foreach (var tab in Model)
+{
+    <tr>
+        <td>@tab.Id</td>
+        <td>@tab.TabCode</td>
+        <td>@tab.TableNumber</td>
+        <td>@tab.Status</td>
+        <td class="text-end">
+            <a asp-action="Details" asp-route-id="@tab.Id">Details</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Edit" asp-route-id="@tab.Id">Edit</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Delete" asp-route-id="@tab.Id">Delete</a>
+        </td>
+    </tr>
+}

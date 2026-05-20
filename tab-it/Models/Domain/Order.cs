@@ -7,14 +7,24 @@ public class Order
 {
     [Key]
     public int Id { get; set; }
+    [Required]
+    [StringLength(40)]
     public string OrderNumber { get; set; } = string.Empty;
+
+    [Required]
     public DateTime OrderedAt { get; set; }
     public OrderStatus Status { get; set; }
+    [Range(0, 999999)]
     public decimal Subtotal { get; set; }
+
+    [Range(0, 100)]
     public decimal DiscountPercent { get; set; }
+
+    [Range(0, 999999)]
     public decimal Total { get; set; }
 
     [ForeignKey("CustomerTab")]
+    [Range(1, int.MaxValue)]
     public int CustomerTabId { get; set; }
     public virtual CustomerTab? CustomerTab { get; set; }
 

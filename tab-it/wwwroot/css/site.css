@@ -316,6 +316,30 @@ a:hover {
   transition: background 150ms ease;
 }
 
+.app-table tbody tr.row-reveal {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.app-table tbody tr.row-reveal.row-reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.app-table tbody.is-loading {
+  position: relative;
+}
+
+.app-table tbody.is-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(232, 139, 0, 0.12), rgba(255, 255, 255, 0.2));
+  animation: shimmer 1.1s linear infinite;
+  pointer-events: none;
+}
+
 .app-table tbody tr:hover {
   background: var(--app-surface-soft);
 }
@@ -411,6 +435,55 @@ button:focus-visible,
   box-shadow: inset 1px 1px 0px rgba(0,0,0,0.05);
 }
 
+.autocomplete-field {
+  position: relative;
+}
+
+.autocomplete-menu {
+  position: absolute;
+  inset: auto 0 0 0;
+  transform: translateY(10px);
+  background: #ffffff;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  box-shadow: var(--app-shadow-1);
+  margin-top: 0.35rem;
+  max-height: 240px;
+  overflow-y: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+  z-index: 20;
+}
+
+.autocomplete-menu.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.autocomplete-option {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0.65rem 0.85rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.autocomplete-option:hover,
+.autocomplete-option:focus-visible {
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+
+.autocomplete-empty {
+  padding: 0.6rem 0.85rem;
+  color: var(--app-muted);
+  font-size: 0.9rem;
+}
+
 @media (max-width: 991.98px) {
   .app-shell {
     flex-direction: column;
@@ -465,5 +538,14 @@ button:focus-visible,
 
   .app-panel {
     padding: 1.25rem 1.35rem;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-20%);
+  }
+  100% {
+    transform: translateX(20%);
   }
 }

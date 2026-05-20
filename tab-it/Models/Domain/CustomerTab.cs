@@ -7,14 +7,22 @@ public class CustomerTab
 {
     [Key]
     public int Id { get; set; }
+    [Required]
+    [StringLength(40)]
     public string TabCode { get; set; } = string.Empty;
+
+    [Range(1, 999)]
     public int TableNumber { get; set; }
+
+    [Required]
     public DateTime OpenedAt { get; set; }
     public DateTime? ClosedAt { get; set; }
     public TabStatus Status { get; set; }
+    [StringLength(500)]
     public string Notes { get; set; } = string.Empty;
 
     [ForeignKey("OpenedByUser")]
+    [Range(1, int.MaxValue)]
     public int OpenedByUserId { get; set; }
     public virtual User? OpenedByUser { get; set; }
 

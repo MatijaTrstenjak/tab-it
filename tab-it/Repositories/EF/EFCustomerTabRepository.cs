@@ -29,4 +29,22 @@ public class EFCustomerTabRepository : ICustomerTabRepository
         _context.CustomerTabs.Add(tab);
         _context.SaveChanges();
     }
+
+    public void Update(CustomerTab tab)
+    {
+        _context.CustomerTabs.Update(tab);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var tab = _context.CustomerTabs.Find(id);
+        if (tab is null)
+        {
+            return;
+        }
+
+        _context.CustomerTabs.Remove(tab);
+        _context.SaveChanges();
+    }
 }

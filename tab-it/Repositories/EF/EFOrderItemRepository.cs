@@ -35,4 +35,22 @@ public class EFOrderItemRepository : IOrderItemRepository
         _context.OrderItems.Add(orderItem);
         _context.SaveChanges();
     }
+
+    public void Update(OrderItem orderItem)
+    {
+        _context.OrderItems.Update(orderItem);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var orderItem = _context.OrderItems.Find(id);
+        if (orderItem is null)
+        {
+            return;
+        }
+
+        _context.OrderItems.Remove(orderItem);
+        _context.SaveChanges();
+    }
 }

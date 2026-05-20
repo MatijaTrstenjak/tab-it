@@ -29,4 +29,22 @@ public class EFOrderRepository : IOrderRepository
         _context.Orders.Add(order);
         _context.SaveChanges();
     }
+
+    public void Update(Order order)
+    {
+        _context.Orders.Update(order);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var order = _context.Orders.Find(id);
+        if (order is null)
+        {
+            return;
+        }
+
+        _context.Orders.Remove(order);
+        _context.SaveChanges();
+    }
 }

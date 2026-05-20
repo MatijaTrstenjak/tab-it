@@ -30,7 +30,7 @@
         display: grid;
         grid-template-columns: 200px 1fr 300px;
         height: 100vh;
-        width: 100vw;
+        width: 100%;
         gap: 1rem;
         padding: 1rem;
         box-sizing: border-box;
@@ -47,6 +47,7 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        box-sizing: border-box;
     }
     
     .pos-panel-title {
@@ -234,6 +235,151 @@
     .pos-nav-exit:hover {
         background: #f0f0f0;
     }
+
+    .pos-tab-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .pos-tab-current {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .pos-tab-btn {
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-pill);
+        padding: 0.4rem 0.85rem;
+        font-weight: 800;
+        background: var(--pos-bg);
+        cursor: pointer;
+    }
+
+    .pos-tab-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 20;
+    }
+
+    .pos-tab-overlay.active {
+        display: flex;
+    }
+
+    .pos-tab-panel {
+        width: min(560px, 90vw);
+        background: var(--pos-card);
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-radius);
+        box-shadow: 8px 8px 0px rgba(0,0,0,1);
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .pos-tab-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--pos-border);
+    }
+
+    .pos-tab-panel-title {
+        font-size: 1.25rem;
+        font-weight: 900;
+    }
+
+    .pos-tab-panel-close {
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-pill);
+        padding: 0.25rem 0.75rem;
+        font-weight: 800;
+        background: var(--pos-bg);
+        cursor: pointer;
+    }
+
+    .pos-open-tabs {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .pos-tab-entry {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: space-between;
+    }
+
+    .pos-tab-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .pos-open-tab-btn {
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-pill);
+        padding: 0.4rem 0.75rem;
+        font-weight: 700;
+        background: var(--pos-bg);
+        cursor: pointer;
+    }
+
+    .pos-open-tab-btn.active {
+        background: var(--pos-accent);
+        color: #fff;
+        box-shadow: 2px 2px 0px rgba(0,0,0,1);
+    }
+
+    .pos-tab-status {
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-radius);
+        padding: 0.35rem 0.6rem;
+        font-weight: 700;
+        background: #fff;
+        min-width: 140px;
+        box-sizing: border-box;
+    }
+
+    .pos-new-tab {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .pos-new-tab input {
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-radius);
+        padding: 0.5rem 0.6rem;
+        font-weight: 600;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .pos-new-tab button {
+        grid-column: span 2;
+        border: 2px solid var(--pos-border);
+        border-radius: var(--pos-pill);
+        padding: 0.6rem 1rem;
+        font-weight: 900;
+        background: var(--pos-accent);
+        color: #fff;
+        cursor: pointer;
+        width: 100%;
+        box-sizing: border-box;
+    }
 </style>
 
 <div class="pos-container">
@@ -262,7 +408,12 @@
 
     <!-- Receipt -->
     <div class="pos-panel pos-receipt">
-        <h2 class="pos-panel-title">Current Order</h2>
+        <div class="pos-tab-row">
+            <h2 class="pos-panel-title" style="margin-bottom: 0;">Current Order</h2>
+            <button class="pos-tab-btn" type="button" onclick="openTabPanel()">Tabs</button>
+        </div>
+        <div class="pos-tab-current" id="currentTabLabel">No tab selected</div>
+        @Html.AntiForgeryToken()
         <div class="receipt-items" id="receiptList">
             <!-- Populated by JS -->
         </div>
@@ -276,6 +427,21 @@
     </div>
 </div>
 
+<div class="pos-tab-overlay" id="tabOverlay">
+    <div class="pos-tab-panel">
+        <div class="pos-tab-panel-header">
+            <div class="pos-tab-panel-title">Manage Tabs</div>
+            <button class="pos-tab-panel-close" type="button" onclick="closeTabPanel()">Close</button>
+        </div>
+        <div class="pos-open-tabs" id="openTabsList"></div>
+        <div class="pos-new-tab">
+            <input id="newTabTable" type="number" min="1" placeholder="Table #" />
+            <input id="newTabNotes" type="text" maxlength="500" placeholder="Notes (optional)" />
+            <button type="button" onclick="createTab()">Open New Tab</button>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         document.body.classList.add('pos-mode');
@@ -283,9 +449,148 @@
         // Data from Repositories
         const categories = @Html.Raw(JsonSerializer.Serialize(ViewData["Categories"] ?? new List<ProductCategory>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
         const products = @Html.Raw(JsonSerializer.Serialize(ViewData["Products"] ?? new List<Product>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
+        const tabs = @Html.Raw(JsonSerializer.Serialize(ViewData["Tabs"] ?? new List<CustomerTab>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
 
         let currentCategoryId = null;
         let order = [];
+        let currentTabId = null;
+
+        function renderTabs() {
+            const openTabsList = document.getElementById('openTabsList');
+            openTabsList.innerHTML = '';
+
+            const openTabs = tabs.filter(t => t.status !== 2);
+            openTabs.forEach(t => {
+                const entry = document.createElement('div');
+                entry.className = 'pos-tab-entry';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'pos-open-tab-btn' + (currentTabId === t.id ? ' active' : '');
+                btn.textContent = `Table ${t.tableNumber}`;
+                btn.onclick = () => {
+                    currentTabId = t.id;
+                    renderTabs();
+                    renderCurrentTab();
+                    closeTabPanel();
+                };
+
+                const actions = document.createElement('div');
+                actions.className = 'pos-tab-actions';
+
+                const statusSelect = document.createElement('select');
+                statusSelect.className = 'pos-tab-status';
+                statusSelect.innerHTML = `
+                    <option value="1">Open</option>
+                    <option value="2">Closed</option>
+                    <option value="3">Cancelled</option>
+                `;
+                statusSelect.value = String(t.status);
+                statusSelect.onchange = () => updateTabStatus(t.id, parseInt(statusSelect.value, 10));
+
+                actions.appendChild(statusSelect);
+                entry.appendChild(btn);
+                entry.appendChild(actions);
+                openTabsList.appendChild(entry);
+            });
+        }
+
+        function renderCurrentTab() {
+            const label = document.getElementById('currentTabLabel');
+            const tab = tabs.find(t => t.id === currentTabId);
+            label.textContent = tab
+                ? `${tab.tabCode} (Table ${tab.tableNumber})`
+                : 'No tab selected';
+        }
+
+        function openTabPanel() {
+            document.getElementById('tabOverlay').classList.add('active');
+            renderTabs();
+        }
+
+        function closeTabPanel() {
+            document.getElementById('tabOverlay').classList.remove('active');
+        }
+
+        function createTab() {
+            const tableInput = document.getElementById('newTabTable');
+            const notesInput = document.getElementById('newTabNotes');
+            const tableNumber = parseInt(tableInput.value, 10);
+            if (!tableNumber) {
+                alert('Enter a table number.');
+                return;
+            }
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const payload = {
+                tableNumber,
+                notes: notesInput.value
+            };
+
+            fetch('@Url.Action("CreateTab", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(async response => {
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Create tab failed.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    tabs.push(data);
+                    tableInput.value = '';
+                    notesInput.value = '';
+                    currentTabId = data.id;
+                    renderTabs();
+                    renderCurrentTab();
+                    closeTabPanel();
+                })
+                .catch(err => {
+                    alert(err.message);
+                });
+        }
+
+        function updateTabStatus(tabId, status) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const payload = { tabId, status };
+
+            fetch('@Url.Action("UpdateTabStatus", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(async response => {
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Update tab failed.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tab = tabs.find(t => t.id === data.id);
+                    if (tab) {
+                        tab.status = data.status;
+                    }
+                    if (currentTabId === data.id && data.status === 2) {
+                        currentTabId = null;
+                    }
+                    renderTabs();
+                    renderCurrentTab();
+                })
+                .catch(err => {
+                    alert(err.message);
+                    renderTabs();
+                });
+        }
 
         function renderCategories() {
             const list = document.getElementById('categoryList');
@@ -373,14 +678,52 @@
                 alert("Cart is empty!");
                 return;
             }
-            alert("Checkout complete!\\n\\nIntegration pending for backend systems.");
-            order = [];
-            renderReceipt();
+
+            if (!currentTabId) {
+                alert("Select a customer tab first.");
+                return;
+            }
+
+            const payload = {
+                customerTabId: currentTabId,
+                items: order.map(item => ({
+                    productId: item.product.id,
+                    quantity: item.qty
+                }))
+            };
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch('@Url.Action("Checkout", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(async response => {
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Checkout failed.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(`Order ${data.orderNumber} charged. Total: $${Number(data.total).toFixed(2)}`);
+                    order = [];
+                    renderReceipt();
+                })
+                .catch(err => {
+                    alert(err.message);
+                });
         }
 
         // Initialize
         renderCategories();
         renderProducts();
+        renderTabs();
+        renderCurrentTab();
         renderReceipt();
     </script>
 }

@@ -1,0 +1,18 @@
+@model IReadOnlyList<User>
+
+@foreach (var user in Model)
+{
+    <tr>
+        <td>@user.Id</td>
+        <td>@user.FirstName @user.LastName</td>
+        <td>@user.Username</td>
+        <td>@user.Email</td>
+        <td class="text-end">
+            <a asp-action="Details" asp-route-id="@user.Id">Details</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Edit" asp-route-id="@user.Id">Edit</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+        </td>
+    </tr>
+}

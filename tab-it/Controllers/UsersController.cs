@@ -52,4 +52,82 @@ public class UsersController : Controller
         ViewData["Title"] = "Create User";
         return View(user);
     }
+
+    public IActionResult Edit(int id)
+    {
+        var user = _userRepository.GetById(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        ViewData["Title"] = "Edit User";
+        return View(user);
+    }
+
+    [HttpPost, ActionName("Edit")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditPost(int id)
+    {
+        var user = _userRepository.GetById(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var updated = await TryUpdateModelAsync(user);
+        if (updated && ModelState.IsValid)
+        {
+            _userRepository.Update(user);
+            return RedirectToAction(nameof(Index));
+        }
+
+        ViewData["Title"] = "Edit User";
+        return View(user);
+    }
+
+    public IActionResult Delete(int id)
+    {
+        var user = _userRepository.GetById(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        ViewData["Title"] = "Delete User";
+        return View(user);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        var user = _userRepository.GetById(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        _userRepository.Delete(id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult Search(string? q)
+    {
+        var query = (q ?? string.Empty).Trim();
+        var users = _userRepository.GetAll();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            users = users
+                .Where(u => u.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase)
+                            || u.LastName.Contains(query, StringComparison.OrdinalIgnoreCase)
+                            || u.Username.Contains(query, StringComparison.OrdinalIgnoreCase)
+                            || u.Email.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        return PartialView("_Rows", users);
+    }
 }

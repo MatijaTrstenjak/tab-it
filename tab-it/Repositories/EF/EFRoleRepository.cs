@@ -28,4 +28,22 @@ public class EFRoleRepository : IRoleRepository
         _context.Roles.Add(role);
         _context.SaveChanges();
     }
+
+    public void Update(Role role)
+    {
+        _context.Roles.Update(role);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var role = _context.Roles.Find(id);
+        if (role is null)
+        {
+            return;
+        }
+
+        _context.Roles.Remove(role);
+        _context.SaveChanges();
+    }
 }

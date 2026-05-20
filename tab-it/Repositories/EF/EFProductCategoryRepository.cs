@@ -28,4 +28,22 @@ public class EFProductCategoryRepository : IProductCategoryRepository
         _context.ProductCategories.Add(category);
         _context.SaveChanges();
     }
+
+    public void Update(ProductCategory category)
+    {
+        _context.ProductCategories.Update(category);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var category = _context.ProductCategories.Find(id);
+        if (category is null)
+        {
+            return;
+        }
+
+        _context.ProductCategories.Remove(category);
+        _context.SaveChanges();
+    }
 }

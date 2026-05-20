@@ -1,0 +1,18 @@
+@model IReadOnlyList<Product>
+
+@foreach (var product in Model)
+{
+    <tr>
+        <td>@product.Id</td>
+        <td>@product.Name</td>
+        <td>@product.Sku</td>
+        <td>@product.UnitPrice.ToString("F2")</td>
+        <td class="text-end">
+            <a asp-action="Details" asp-route-id="@product.Id">Details</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Edit" asp-route-id="@product.Id">Edit</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Delete" asp-route-id="@product.Id">Delete</a>
+        </td>
+    </tr>
+}

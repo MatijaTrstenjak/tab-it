@@ -1,0 +1,18 @@
+@model IReadOnlyList<Order>
+
+@foreach (var order in Model)
+{
+    <tr>
+        <td>@order.Id</td>
+        <td>@order.OrderNumber</td>
+        <td>@order.Status</td>
+        <td>@order.Total.ToString("F2")</td>
+        <td class="text-end">
+            <a asp-action="Details" asp-route-id="@order.Id">Details</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Delete" asp-route-id="@order.Id">Delete</a>
+        </td>
+    </tr>
+}

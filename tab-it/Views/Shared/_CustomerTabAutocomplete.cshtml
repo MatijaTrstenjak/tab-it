@@ -1,0 +1,18 @@
+@model tab_it.Models.Domain.Order
+
+@{
+    var displayValue = ViewData["CustomerTabDisplay"] as string ?? string.Empty;
+}
+
+<div class="form-group mb-3 autocomplete-field" data-search-url="@Url.Action("Lookup", "CustomerTabs")">
+    <label class="control-label" for="CustomerTabId">Customer Tab</label>
+    <input type="text"
+           class="form-control js-autocomplete-input"
+           value="@displayValue"
+            name="CustomerTabDisplay"
+           placeholder="Search tabs"
+           autocomplete="off" />
+    <input asp-for="CustomerTabId" type="hidden" class="js-autocomplete-value" />
+    <div class="autocomplete-menu" role="listbox"></div>
+    <span asp-validation-for="CustomerTabId" class="text-danger"></span>
+</div>
