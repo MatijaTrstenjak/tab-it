@@ -1,0 +1,25 @@
+@model tab_it.Models.DashboardOrderCardViewModel
+
+@functions {
+    private static string TableLabel(Order order)
+    {
+        return order.CustomerTab is null ? "Takeaway" : $"Table {order.CustomerTab.TableNumber}";
+    }
+
+    private static string ProductName(OrderItem item)
+    {
+        return item.Product?.Name ?? $"Product {item.ProductId}";
+    }
+}
+
+<article class="order-card">
+    <button class="order-card-trigger" type="button" data-bs-toggle="modal" data-bs-target="#orderModal-@Model.Order.Id" aria-label="Open @TableLabel(Model.Order) order details">
+        <div class="order-card-top">
+            <div>
+                <p class="order-title">@TableLabel(Model.Order)</p>
+                <div class="order-meta">@Model.Order.OrderedAt.ToString("HH:mm") - @Model.Order.Items.Sum(i => i.Quantity) items</div>
+            </div>
+            <span class="status-badge @Model.StatusClass">@Model.StatusLabel</span>
+        </div>
+    </button>
+</article>

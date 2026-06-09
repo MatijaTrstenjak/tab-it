@@ -16,12 +16,34 @@ public class EFCustomerTabRepository : ICustomerTabRepository
 
     public IReadOnlyList<CustomerTab> GetAll()
     {
-        return _context.CustomerTabs.Include(t => t.OpenedByUser).ToList();
+        return _context.CustomerTabs
+            .Include(t => t.OpenedByUser)
+            .Include(t => t.Orders)
+                .ThenInclude(o => o.Items)
+                    .ThenInclude(i => i.Product)
+            .ToList();
+    }
+
+    public IReadOnlyList<CustomerTab> GetAllBasic()
+    {
+        return _context.CustomerTabs.ToList();
+    }
+
+    public IReadOnlyList<CustomerTab> GetAllForPos()
+    {
+        return _context.CustomerTabs
+            .Include(t => t.Orders)
+            .ToList();
     }
 
     public CustomerTab? GetById(int id)
     {
-        return _context.CustomerTabs.Include(t => t.OpenedByUser).FirstOrDefault(t => t.Id == id);
+        return _context.CustomerTabs
+            .Include(t => t.OpenedByUser)
+            .Include(t => t.Orders)
+                .ThenInclude(o => o.Items)
+                    .ThenInclude(i => i.Product)
+            .FirstOrDefault(t => t.Id == id);
     }
 
     public void Add(CustomerTab tab)

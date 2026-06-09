@@ -1,0 +1,11 @@
+@model ProductRecipeItem
+
+<section class="app-panel">
+    <h1>Recipe Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Id</dd>
+        <dt class="col-sm-3">Product</dt><dd class="col-sm-9"><a asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">@(Model.Product?.Name ?? $"Product {Model.ProductId}")</a></dd>
+        <dt class="col-sm-3">Inventory</dt><dd class="col-sm-9"><a asp-controller="InventoryItems" asp-action="Details" asp-route-id="@Model.InventoryItemId">@(Model.InventoryItem?.Name ?? $"Inventory {Model.InventoryItemId}")</a></dd>
+        <dt class="col-sm-3">Quantity Required</dt><dd class="col-sm-9">@Model.QuantityRequired.ToString("0.###") @(Model.InventoryItem?.Unit.ToString() ?? string.Empty)</dd>
+    </dl>
+</section>

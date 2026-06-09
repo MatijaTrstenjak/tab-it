@@ -29,4 +29,5 @@ public class Product
 
     // Bridge relation for N-N between orders and products.
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public virtual ICollection<ProductRecipeItem> RecipeItems { get; set; } = new List<ProductRecipeItem>();
 }

@@ -1,43 +1,647 @@
+@model tab_it.Models.DashboardViewModel
 @{
     ViewData["Title"] = "Operations Dashboard";
 }
 
-@section Breadcrumbs {
-    <nav aria-label="breadcrumb" class="app-breadcrumbs">
-        <ol>
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li aria-current="page">Dashboard</li>
-        </ol>
-    </nav>
+@functions {
+    private static string TableLabel(Order order)
+    {
+        return order.CustomerTab is null ? "Takeaway" : $"Table {order.CustomerTab.TableNumber}";
+    }
+
+    private static string ProductName(OrderItem item)
+    {
+        return item.Product?.Name ?? $"Product {item.ProductId}";
+    }
+
+    private static decimal TabTotal(CustomerTab tab)
+    {
+        return tab.Orders.Sum(o => o.Total);
+    }
+
+    private static OrderStatus? NextStatus(Order order)
+    {
+        return order.Status switch
+        {
+            OrderStatus.SentToBar => OrderStatus.Preparing,
+            OrderStatus.Preparing => OrderStatus.Ready,
+            OrderStatus.Ready => OrderStatus.Served,
+            _ => null
+        };
+    }
+
+    private static string? NextActionLabel(Order order)
+    {
+        return order.Status switch
+        {
+            OrderStatus.SentToBar => "Start Preparing",
+            OrderStatus.Preparing => "Mark Ready",
+            OrderStatus.Ready => "Mark Served",
+            _ => null
+        };
+    }
+
+    private static string StatusClass(Order order)
+    {
+        return order.Status switch
+        {
+            OrderStatus.SentToBar => "status-incoming",
+            OrderStatus.Preparing => "status-preparing",
+            OrderStatus.Ready => "status-ready",
+            OrderStatus.Served => "status-served",
+            _ => "status-served"
+        };
+    }
 }
 
-<section class="entity-grid">
-    <div class="entity-tile">
-        <a asp-controller="Roles" asp-action="Index"><h2>Roles</h2><p>List and details</p></a>
-        <a asp-controller="Roles" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Roles">Add New</a>
-    </div>
-    <div class="entity-tile">
-        <a asp-controller="Users" asp-action="Index"><h2>Users</h2><p>List and details</p></a>
-        <a asp-controller="Users" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Users">Add New</a>
-    </div>
-    <div class="entity-tile">
-        <a asp-controller="ProductCategories" asp-action="Index"><h2>Product Categories</h2><p>List and details</p></a>
-        <a asp-controller="ProductCategories" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Product Categories">Add New</a>
-    </div>
-    <div class="entity-tile">
-        <a asp-controller="Products" asp-action="Index"><h2>Products</h2><p>List and details</p></a>
-        <a asp-controller="Products" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Products">Add New</a>
-    </div>
-    <div class="entity-tile">
-        <a asp-controller="CustomerTabs" asp-action="Index"><h2>Customer Tabs</h2><p>List and details</p></a>
-        <a asp-controller="CustomerTabs" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Customer Tabs">Add New</a>
-    </div>
-    <div class="entity-tile">
-        <a asp-controller="Orders" asp-action="Index"><h2>Orders</h2><p>List and details</p></a>
-        <a asp-controller="Orders" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Orders">Add New</a>
-    </div>
-    <div class="entity-tile">
-        <a asp-controller="OrderItems" asp-action="Index"><h2>Order Items</h2><p>List and details</p></a>
-        <a asp-controller="OrderItems" asp-action="Create" class="btn btn-sm btn-primary ajax-modal-link" data-title="Order Items">Add New</a>
-    </div>
+<style>
+    .ops-dashboard {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .ops-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .ops-title h1 {
+        margin: 0;
+        font-size: clamp(1.65rem, 2vw, 2.2rem);
+        font-weight: 800;
+        letter-spacing: 0;
+    }
+
+    .ops-title p {
+        margin: 0.25rem 0 0;
+        color: var(--app-muted);
+    }
+
+    .ops-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .ops-panel,
+    .order-column {
+        background: var(--app-surface);
+        border: 0;
+        border-radius: 16px;
+        box-shadow: var(--app-shadow-2);
+    }
+
+    .ops-workspace {
+        min-width: 0;
+    }
+
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-heading h2,
+    .section-heading h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .count-pill {
+        min-width: 1.75rem;
+        height: 1.75rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: var(--app-accent-soft);
+        color: var(--app-accent-strong);
+        font-weight: 800;
+        font-size: 0.85rem;
+    }
+
+    .table-tab-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .table-tab,
+    .order-card-trigger {
+        width: 100%;
+        text-align: left;
+        color: inherit;
+        cursor: pointer;
+        transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+
+    .table-tab {
+        border: 0;
+        border-radius: 14px;
+        padding: 0.9rem;
+        background: #f7f7f3;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+    }
+
+    .table-tab:hover,
+    .table-tab:focus-visible,
+    .order-card:hover .order-card-trigger,
+    .order-card-trigger:focus-visible {
+        background: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+    }
+
+    button.table-tab,
+    button.order-card-trigger {
+        font: inherit;
+    }
+
+    .table-tab-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .table-tab-title {
+        margin: 0;
+        font-weight: 800;
+        color: var(--app-secondary);
+    }
+
+    .table-tab-meta,
+    .order-meta,
+    .empty-state {
+        color: var(--app-muted);
+        font-size: 0.9rem;
+    }
+
+    .tab-order-list,
+    .order-items {
+        margin: 0.75rem 0 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .tab-order-list li,
+    .order-items li {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        border-top: 1px solid var(--app-border);
+        padding-top: 0.45rem;
+        font-size: 0.9rem;
+    }
+
+    .ops-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+        background: var(--app-surface);
+        border: 0;
+        border-radius: 16px;
+        padding: 1.15rem;
+        box-shadow: var(--app-shadow-1);
+    }
+
+    .metric-value {
+        display: block;
+        font-size: 2rem;
+        line-height: 1;
+        font-weight: 800;
+    }
+
+    .metric-label {
+        display: block;
+        margin-top: 0.35rem;
+        color: var(--app-muted);
+        font-weight: 600;
+    }
+
+    .order-board {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(210px, 1fr));
+        gap: 1rem;
+    }
+
+    .order-column {
+        padding: 1.1rem;
+        min-height: 17rem;
+        box-shadow: var(--app-shadow-1);
+    }
+
+    .order-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .order-card {
+        border: 0;
+        border-radius: 14px;
+        padding: 0;
+        background: #f7f7f3;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+    }
+
+    .order-card-trigger {
+        border: 0;
+        border-radius: 14px;
+        padding: 0.95rem;
+        background: transparent;
+    }
+
+    .order-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .order-title {
+        margin: 0;
+        font-weight: 800;
+        color: var(--app-secondary);
+    }
+
+    .status-badge {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .status-incoming {
+        background: #e8f2ff;
+        color: #12559b;
+    }
+
+    .status-preparing {
+        background: #fff6db;
+        color: #8a5a00;
+    }
+
+    .status-ready {
+        background: #e8f7ef;
+        color: #1f6b3b;
+    }
+
+    .status-served {
+        background: #eeeeee;
+        color: #555555;
+    }
+
+    .order-card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
+    }
+
+    .order-card-actions form {
+        margin: 0;
+    }
+
+    .compact-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.1rem;
+        border: 0;
+        border-radius: 999px;
+        background: var(--app-accent);
+        color: #1a1a1a;
+        font-weight: 800;
+        padding: 0.35rem 0.7rem;
+        font-size: 0.85rem;
+        text-decoration: none;
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.16);
+    }
+
+    .compact-btn.secondary {
+        background: var(--app-surface);
+        color: var(--app-text);
+    }
+
+    .compact-btn:hover,
+    .compact-btn:focus-visible {
+        color: #1a1a1a;
+        transform: translate(1px, 1px);
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.16);
+    }
+
+    .empty-state {
+        padding: 1rem 0;
+        text-align: center;
+    }
+
+    .detail-modal-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+    }
+
+    .detail-modal-list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.65rem 0;
+        border-bottom: 1px solid var(--app-border);
+    }
+
+    .detail-modal-list li:last-child {
+        border-bottom: 0;
+    }
+
+    .modal-content {
+        border: 0;
+        border-radius: 16px;
+        box-shadow: var(--app-shadow-2);
+    }
+
+    .modal-header {
+        border-bottom-color: var(--app-border);
+    }
+
+    @@media (max-width: 1400px) {
+        .order-board {
+            grid-template-columns: repeat(2, minmax(260px, 1fr));
+        }
+    }
+
+    @@media (max-width: 900px) {
+        .ops-metrics,
+        .order-board {
+            grid-template-columns: 1fr;
+        }
+
+        .ops-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .ops-actions {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<section class="ops-dashboard">
+    <header class="ops-header">
+        <div class="ops-title">
+            <h1>Operations Dashboard</h1>
+            <p>Move orders through preparation and inspect table details when needed.</p>
+        </div>
+        <div class="ops-actions">
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#openTablesModal">
+                Open Tables (@Model.OpenTabs.Count)
+            </button>
+        </div>
+    </header>
+
+    <main class="ops-workspace">
+        <div class="ops-metrics" aria-label="Order summary">
+            <div class="metric-card">
+                <span class="metric-value">@Model.NewOrdersCount</span>
+                <span class="metric-label">Incoming</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">@Model.WaitingListCount</span>
+                <span class="metric-label">In preparation or ready</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">@Model.TotalOrdersCount</span>
+                <span class="metric-label">Today total</span>
+            </div>
+        </div>
+
+        <div class="order-board">
+            <section class="order-column">
+                <div class="section-heading">
+                    <h3>Incoming</h3>
+                    <span class="count-pill">@Model.IncomingOrders.Count</span>
+                </div>
+                <div class="order-stack">
+                    @foreach (var order in Model.IncomingOrders)
+                    {
+                        <partial name="_DashboardOrderCard" model="@(new DashboardOrderCardViewModel(order, "status-incoming", "Incoming", OrderStatus.Preparing, "Start"))" />
+                    }
+                    @if (!Model.IncomingOrders.Any())
+                    {
+                        <div class="empty-state">No incoming orders.</div>
+                    }
+                </div>
+            </section>
+
+            <section class="order-column">
+                <div class="section-heading">
+                    <h3>Preparing</h3>
+                    <span class="count-pill">@Model.OrdersInMaking.Count</span>
+                </div>
+                <div class="order-stack">
+                    @foreach (var order in Model.OrdersInMaking)
+                    {
+                        <partial name="_DashboardOrderCard" model="@(new DashboardOrderCardViewModel(order, "status-preparing", "Preparing", OrderStatus.Ready, "Mark Ready"))" />
+                    }
+                    @if (!Model.OrdersInMaking.Any())
+                    {
+                        <div class="empty-state">Nothing in preparation.</div>
+                    }
+                </div>
+            </section>
+
+            <section class="order-column">
+                <div class="section-heading">
+                    <h3>Ready</h3>
+                    <span class="count-pill">@Model.OrdersReady.Count</span>
+                </div>
+                <div class="order-stack">
+                    @foreach (var order in Model.OrdersReady)
+                    {
+                        <partial name="_DashboardOrderCard" model="@(new DashboardOrderCardViewModel(order, "status-ready", "Ready", OrderStatus.Served, "Mark Served"))" />
+                    }
+                    @if (!Model.OrdersReady.Any())
+                    {
+                        <div class="empty-state">No orders ready.</div>
+                    }
+                </div>
+            </section>
+
+            <section class="order-column">
+                <div class="section-heading">
+                    <h3>Served</h3>
+                    <span class="count-pill">@Model.OrdersServed.Count</span>
+                </div>
+                <div class="order-stack">
+                    @foreach (var order in Model.OrdersServed)
+                    {
+                        <partial name="_DashboardOrderCard" model="@(new DashboardOrderCardViewModel(order, "status-served", "Served", null, null))" />
+                    }
+                    @if (!Model.OrdersServed.Any())
+                    {
+                        <div class="empty-state">No served orders yet.</div>
+                    }
+                </div>
+            </section>
+        </div>
+    </main>
 </section>
+
+<div class="modal fade" id="openTablesModal" tabindex="-1" aria-labelledby="openTablesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="openTablesModalLabel">Open Tables</h5>
+                    <div class="table-tab-meta">Choose a table to inspect its current orders.</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-tab-list">
+                    @foreach (var tab in Model.OpenTabs)
+                    {
+                        var itemCount = tab.Orders.Sum(o => o.Items.Sum(i => i.Quantity));
+                        <button class="table-tab" type="button" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#tableModal-@tab.Id">
+                            <div class="table-tab-top">
+                                <div>
+                                    <p class="table-tab-title">Table @tab.TableNumber</p>
+                                    <div class="table-tab-meta">@tab.Orders.Count orders - @itemCount items</div>
+                                </div>
+                                <strong>@TabTotal(tab).ToString("F2") EUR</strong>
+                            </div>
+                        </button>
+                    }
+
+                    @if (!Model.OpenTabs.Any())
+                    {
+                        <div class="empty-state">No open table tabs.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var tab in Model.OpenTabs)
+{
+    <div class="modal fade" id="tableModal-@tab.Id" tabindex="-1" aria-labelledby="tableModalLabel-@tab.Id" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title" id="tableModalLabel-@tab.Id">Table @tab.TableNumber</h5>
+                        <div class="table-tab-meta">@tab.Status - @TabTotal(tab).ToString("F2") EUR</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (tab.Orders.Any())
+                    {
+                        @foreach (var order in tab.Orders.OrderByDescending(o => o.OrderedAt))
+                        {
+                            var nextStatus = NextStatus(order);
+                            var nextActionLabel = NextActionLabel(order);
+                            <section class="mb-4">
+                                <div class="section-heading">
+                                    <h3>@order.OrderedAt.ToString("HH:mm") order</h3>
+                                    <span class="status-badge @StatusClass(order)">@order.Status</span>
+                                </div>
+                                <ul class="detail-modal-list">
+                                    @foreach (var item in order.Items)
+                                    {
+                                        <li>
+                                            <span>@item.Quantity x @ProductName(item)</span>
+                                            <strong>@item.LineTotal.ToString("F2") EUR</strong>
+                                        </li>
+                                    }
+                                </ul>
+                                @if (nextStatus is not null && nextActionLabel is not null)
+                                {
+                                    <form class="mt-3" asp-controller="Home" asp-action="UpdateOrderStatus" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@order.Id" />
+                                        <input type="hidden" name="status" value="@nextStatus" />
+                                        <button class="compact-btn" type="submit">@nextActionLabel</button>
+                                    </form>
+                                }
+                            </section>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">This table has no orders yet.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@foreach (var order in Model.IncomingOrders.Concat(Model.OrdersInMaking).Concat(Model.OrdersReady).Concat(Model.OrdersServed))
+{
+    var nextStatus = NextStatus(order);
+    var nextActionLabel = NextActionLabel(order);
+    <div class="modal fade" id="orderModal-@order.Id" tabindex="-1" aria-labelledby="orderModalLabel-@order.Id" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title" id="orderModalLabel-@order.Id">@TableLabel(order)</h5>
+                        <div class="order-meta">@order.OrderedAt.ToString("HH:mm") - @order.Status - @order.Total.ToString("F2") EUR</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="detail-modal-list">
+                        @foreach (var item in order.Items)
+                        {
+                            <li>
+                                <span>
+                                    @item.Quantity x @ProductName(item)
+                                    @if (!string.IsNullOrWhiteSpace(item.ItemNote))
+                                    {
+                                        <span class="d-block order-meta">Note: @item.ItemNote</span>
+                                    }
+                                </span>
+                                <strong>@item.LineTotal.ToString("F2") EUR</strong>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                @if (nextStatus is not null && nextActionLabel is not null)
+                {
+                    <div class="modal-footer">
+                        <form asp-controller="Home" asp-action="UpdateOrderStatus" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@order.Id" />
+                            <input type="hidden" name="status" value="@nextStatus" />
+                            <button class="compact-btn" type="submit">@nextActionLabel</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

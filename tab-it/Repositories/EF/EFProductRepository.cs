@@ -16,12 +16,20 @@ public class EFProductRepository : IProductRepository
 
     public IReadOnlyList<Product> GetAll()
     {
-        return _context.Products.Include(p => p.Category).ToList();
+        return _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.RecipeItems)
+                .ThenInclude(r => r.InventoryItem)
+            .ToList();
     }
 
     public Product? GetById(int id)
     {
-        return _context.Products.Include(p => p.Category).FirstOrDefault(p => p.Id == id);
+        return _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.RecipeItems)
+                .ThenInclude(r => r.InventoryItem)
+            .FirstOrDefault(p => p.Id == id);
     }
 
     public void Add(Product product)

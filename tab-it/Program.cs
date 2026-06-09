@@ -22,6 +22,8 @@ builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 builder.Services.AddScoped<ICustomerTabRepository, EFCustomerTabRepository>();
 builder.Services.AddScoped<IOrderRepository, EFOrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, EFOrderItemRepository>();
+builder.Services.AddScoped<IInventoryItemRepository, EFInventoryItemRepository>();
+builder.Services.AddScoped<IProductRecipeItemRepository, EFProductRecipeItemRepository>();
 
 var app = builder.Build();
 

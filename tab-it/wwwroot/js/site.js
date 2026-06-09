@@ -121,6 +121,183 @@ $(document).ready(function () {
             });
         });
     }
+
+    function bindModalForm() {
+        var $modalBody = $("#globalFormModalBody");
+        var $modalForm = $modalBody.find("form");
+
+        if (!$modalForm.length) {
+            return;
+        }
+
+        if ($.validator && $.validator.unobtrusive) {
+            $modalForm.removeData("validator");
+            $modalForm.removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse($modalForm);
+        }
+
+        initDatePickers($modalBody);
+        initAutocomplete($modalBody);
+
+        $modalForm.off("submit.modalForm").on("submit.modalForm", function (submitEvent) {
+            submitEvent.preventDefault();
+
+            if ($.validator && !$modalForm.valid()) {
+                return;
+            }
+
+            var $submit = $modalForm.find('[type="submit"]');
+            $submit.prop("disabled", true);
+
+            $.ajax({
+                url: $modalForm.attr("action") || window.location.href,
+                method: ($modalForm.attr("method") || "POST").toUpperCase(),
+                data: $modalForm.serialize(),
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .done(function (html) {
+                    var $response = $("<div>").append($.parseHTML(html, document, true));
+                    var $returnedForm = $response.find("form").first();
+
+                    if ($returnedForm.length) {
+                        $modalBody.html($returnedForm);
+                        polishModalContent(currentModalMode());
+                        bindModalForm();
+                        return;
+                    }
+
+                    window.location.reload();
+                })
+                .fail(function (xhr) {
+                    var $response = $("<div>").append($.parseHTML(xhr.responseText || "", document, true));
+                    var $returnedForm = $response.find("form").first();
+
+                    if ($returnedForm.length) {
+                        $modalBody.html($returnedForm);
+                        polishModalContent(currentModalMode());
+                        bindModalForm();
+                        return;
+                    }
+
+                    $modalBody.prepend('<div class="alert alert-danger">Save failed. Check the entered values and try again.</div>');
+                })
+                .always(function () {
+                    $submit.prop("disabled", false);
+                });
+        });
+    }
+
+    function modalModeFromUrl(url) {
+        if (/details(\/|\?|$)/i.test(url)) {
+            return "details";
+        }
+
+        if (/\/edit(\/|\?|$)/i.test(url)) {
+            return "edit";
+        }
+
+        if (/\/delete(\/|\?|$)/i.test(url)) {
+            return "delete";
+        }
+
+        return "add";
+    }
+
+    function actionTitleFromMode(mode) {
+        if (mode === "details") {
+            return "Details: ";
+        }
+
+        if (mode === "edit") {
+            return "Edit ";
+        }
+
+        if (mode === "delete") {
+            return "Delete ";
+        }
+
+        return "Add ";
+    }
+
+    function currentModalMode() {
+        var $modal = $("#globalFormModal");
+        if ($modal.hasClass("modal-mode-delete")) {
+            return "delete";
+        }
+
+        if ($modal.hasClass("modal-mode-edit")) {
+            return "edit";
+        }
+
+        if ($modal.hasClass("modal-mode-details")) {
+            return "details";
+        }
+
+        return "add";
+    }
+
+    function polishModalContent(mode) {
+        var $modal = $("#globalFormModal");
+        var $modalBody = $("#globalFormModalBody");
+
+        $modal
+            .removeClass("modal-mode-add modal-mode-edit modal-mode-delete modal-mode-details")
+            .addClass("modal-mode-" + mode);
+
+        $modalBody.find("form").addClass(mode === "delete" ? "modal-delete-form" : "modal-crud-form");
+        $modalBody.find(".app-panel").addClass("modal-panel");
+
+        $modalBody.find('a[href]').each(function () {
+            var $link = $(this);
+            var href = ($link.attr("href") || "").toLowerCase();
+            var text = $link.text().trim().toLowerCase();
+
+            if (href.endsWith("/index") || text === "back to list" || text === "cancel") {
+                $link.attr("href", "#");
+                $link.attr("data-bs-dismiss", "modal");
+                $link.addClass("modal-cancel-link");
+                if (mode === "delete") {
+                    $link.text("Keep item");
+                } else if (text === "back to list") {
+                    $link.text("Cancel");
+                }
+            }
+        });
+    }
+
+    function loadModalContent(url, titlePrefix, title) {
+        var mode = modalModeFromUrl(url);
+        $('#globalFormModalLabel').text((titlePrefix || "") + (title || ""));
+        $('#globalFormModalBody').html('<div class="text-center my-3"><div class="spinner-border text-primary" role="status"></div></div>');
+        $("#globalFormModal")
+            .removeClass("modal-mode-add modal-mode-edit modal-mode-delete modal-mode-details")
+            .addClass("modal-mode-" + mode);
+        $('#globalFormModal').modal('show');
+
+        $.get(url)
+            .done(function (response) {
+                var $response = $("<div>").append($.parseHTML(response, document, true));
+                var $content = $response.find("form").first();
+
+                if (!$content.length) {
+                    $content = $response.find(".app-panel").first();
+                }
+
+                if (!$content.length) {
+                    $content = $response.find("main").first();
+                }
+
+                $('#globalFormModalBody').html($content.length ? $content : response);
+                polishModalContent(mode);
+                bindModalForm();
+            })
+            .fail(function () {
+                $('#globalFormModalBody').html('<div class="alert alert-danger">Error loading content.</div>');
+            });
+    }
+
     // Bind to all buttons that should open the form inside a modal
     $(document).on('click', '.ajax-modal-link', function (e) {
         e.preventDefault();
@@ -135,27 +312,37 @@ $(document).ready(function () {
             title = $(this).closest('section').find('h1').text();
         }
         
-        $('#globalFormModalLabel').text("Create New " + title);
-        $('#globalFormModalBody').html('<div class="text-center my-3"><div class="spinner-border text-primary" role="status"></div></div>');
-        $('#globalFormModal').modal('show');
-        
-        // Fetch the form from the endpoint and inject it
-        $('#globalFormModalBody').load(url + ' form', function(response, status, xhr) {
-            if (status == "error") {
-                $('#globalFormModalBody').html('<div class="alert alert-danger">Error loading form.</div>');
-                return;
-            }
-            
-            // Re-bind validation for dynamically loaded content limits 
-            if ($.validator && $.validator.unobtrusive) {
-                $("form").removeData("validator");
-                $("form").removeData("unobtrusiveValidation");
-                $.validator.unobtrusive.parse("#globalFormModalBody form");
-            }
+        var action = actionTitleFromMode(modalModeFromUrl(url));
 
-            initDatePickers("#globalFormModalBody");
-            initAutocomplete("#globalFormModalBody");
-        });
+        loadModalContent(url, action, title);
+    });
+
+    $(document).on("click", ".ajax-row-link", function (e) {
+        if ($(e.target).closest("a, button, input, select, textarea, label").length) {
+            return;
+        }
+
+        var url = $(this).data("href");
+        if (!url) {
+            return;
+        }
+
+        var title = $(this).data("title") || "Item";
+        loadModalContent(url, "Details: ", title);
+    });
+
+    $(document).on("click", "#globalFormModalBody a[href]", function (e) {
+        var link = this;
+        var href = link.getAttribute("href") || "";
+
+        if (!/details(\/|\?|$)/i.test(href)) {
+            return;
+        }
+
+        e.preventDefault();
+
+        var label = $(link).text().trim() || "Item";
+        loadModalContent(href, "Details: ", label);
     });
 
     function applyRowReveal($target) {

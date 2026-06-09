@@ -1,0 +1,53 @@
+@model InventoryItem
+
+<h1>Create Inventory Item</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Sku" class="control-label"></label>
+                <input asp-for="Sku" class="form-control" />
+                <span asp-validation-for="Sku" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Unit" class="control-label"></label>
+                <select asp-for="Unit" class="form-select" asp-items="Html.GetEnumSelectList<InventoryUnit>()"></select>
+                <span asp-validation-for="Unit" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="QuantityOnHand" class="control-label"></label>
+                <input asp-for="QuantityOnHand" asp-format="{0:0.###}" type="number" step="0.001" min="0" class="form-control" />
+                <span asp-validation-for="QuantityOnHand" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ReorderLevel" class="control-label"></label>
+                <input asp-for="ReorderLevel" asp-format="{0:0.###}" type="number" step="0.001" min="0" class="form-control" />
+                <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LastRestockedAt" class="control-label"></label>
+                <input asp-for="LastRestockedAt" class="form-control js-datetime" />
+                <span asp-validation-for="LastRestockedAt" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

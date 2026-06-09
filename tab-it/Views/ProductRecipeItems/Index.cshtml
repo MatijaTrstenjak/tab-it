@@ -1,0 +1,43 @@
+@model IReadOnlyList<ProductRecipeItem>
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Recipes</li></ol></nav>
+}
+
+<section class="app-panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <div>
+            <h1 class="m-0">Recipes</h1>
+            <p class="app-panel-lead">Menu items and the inventory ingredients they consume.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary ajax-modal-link" data-title="Recipe Ingredient">Add Ingredient</a>
+    </div>
+
+    <div class="list-toolbar">
+        <div>
+            <label class="form-label" for="recipeSearch">Search recipes</label>
+            <input id="recipeSearch"
+                   class="form-control js-live-search"
+                   data-target="#recipeRows"
+                   data-search-url="@Url.Action("Search")"
+                   placeholder="Coffee, cake, milk..." />
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table app-table align-middle">
+            <thead>
+                <tr>
+                    <th>Menu item</th>
+                    <th>Category</th>
+                    <th>Ingredients</th>
+                    <th>Inventory used</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="recipeRows">
+                <partial name="_Rows" model="Model" />
+            </tbody>
+        </table>
+    </div>
+</section>

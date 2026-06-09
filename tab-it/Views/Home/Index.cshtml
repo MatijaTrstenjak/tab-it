@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome";
     ViewData["HideShell"] = true;
     ViewData["BodyClass"] = "coffee-landing-page";
 }
@@ -9,20 +9,68 @@
 }
 
 <section class="ux-landing">
+    <div class="cafe-background" aria-hidden="true">
+        <div class="pendant-light"></div>
+        <div class="pendant-light pendant-light-2"></div>
+        <div class="shelf">
+            <div class="deco-pot"></div>
+        </div>
+        <div class="shelf shelf-2">
+            <div class="deco-cup"></div>
+        </div>
+    </div>
+
     <main class="ux-hero" role="main">
         <div class="ux-hero-content">
             <p class="ux-kicker">tab-it | Store Operations</p>
-            <h1>Run every shift with calm clarity.</h1>
-            <p class="ux-lead">tab-it brings inventory, POS, team status, and sales performance into one responsive workspace for fast daily decisions.</p>
+            <h1>tab-it</h1>
+            <p class="ux-lead">A focused workspace for taking orders, preparing them, and keeping each table's tab clear during service.</p>
 
             <div class="ux-actions" aria-label="Primary actions">
-                <a class="ux-btn ux-btn-primary" asp-controller="Home" asp-action="Dashboard">Open Dashboard</a>
-                <a class="ux-btn ux-btn-secondary" asp-controller="Home" asp-action="POS" style="margin-left: 1rem; background-color: #E88B00; color: #fff; border: 2px solid #000; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 999px; font-weight: bold; box-shadow: 4px 4px 0px rgba(0,0,0,1); transition: transform 0.1s ease, box-shadow 0.1s ease;">Launch POS</a>
+                <a class="ux-btn ux-btn-primary" asp-controller="Home" asp-action="Dashboard">Enter App</a>
             </div>
         </div>
         
-        <div class="ux-hero-image">
-            <img src="~/images/landing-coffee.jpg" alt="Rich espresso and fresh coffee beans on a wooden table" />
+        <div class="ux-hero-animation" aria-label="Animated cafe scene with barista brewing coffee">
+            <div class="coffee-machine">
+                <div class="machine-top">
+                    <div class="machine-light machine-light-status"></div>
+                    <div class="machine-screen"></div>
+                    <div class="machine-light machine-light-ready"></div>
+                </div>
+                <div class="group-head"></div>
+                <div class="portafilter">
+                    <div class="portafilter-handle"></div>
+                </div>
+                <div class="coffee-stream"></div>
+                <div class="steam-container">
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                </div>
+                <div class="cup">
+                    <div class="liquid"></div>
+                </div>
+                <div class="cup-holder"></div>
+            </div>
+
+            <div class="barista" aria-hidden="true">
+                <div class="barista-head">
+                    <div class="barista-hair"></div>
+                    <div class="barista-eyes"></div>
+                    <div class="barista-cheeks"></div>
+                    <div class="barista-smile"></div>
+                </div>
+                <div class="barista-body">
+                    <div class="apron">
+                        <div class="apron-strap"></div>
+                    </div>
+                </div>
+                <div class="barista-arm-left"></div>
+                <div class="barista-arm-right"></div>
+            </div>
+
+            <div class="counter-top" aria-hidden="true"></div>
         </div>
     </main>
 </section>

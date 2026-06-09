@@ -1,0 +1,25 @@
+@model IReadOnlyList<InventoryItem>
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Inventory</li></ol></nav>
+}
+
+<section class="app-panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <h1 class="m-0">Inventory</h1>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <input type="search"
+                   class="form-control js-live-search"
+                   placeholder="Search inventory"
+                   data-search-url="@Url.Action("Search")"
+                   data-target="#inventory-table-body" />
+            <a asp-action="Create" class="btn btn-primary ajax-modal-link" data-title="Inventory Item">Add New</a>
+        </div>
+    </div>
+    <table class="table app-table">
+        <thead><tr><th>Id</th><th>Name</th><th>Stock</th><th>Reorder</th><th></th></tr></thead>
+        <tbody id="inventory-table-body">
+            @await Html.PartialAsync("_Rows", Model)
+        </tbody>
+    </table>
+</section>

@@ -1,0 +1,39 @@
+@model ProductRecipeItem
+
+<h1>Create Recipe Item</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ProductId" class="control-label">Menu Product</label>
+                <select asp-for="ProductId" class="form-select" asp-items="@(ViewData["Products"] as SelectList)">
+                    <option value="">Select a menu item</option>
+                </select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="InventoryItemId" class="control-label">Inventory Item</label>
+                <select asp-for="InventoryItemId" class="form-select" asp-items="@(ViewData["InventoryItems"] as SelectList)">
+                    <option value="">Select inventory</option>
+                </select>
+                <span asp-validation-for="InventoryItemId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="QuantityRequired" class="control-label"></label>
+                <input asp-for="QuantityRequired" asp-format="{0:0.###}" type="number" step="0.001" min="0.001" class="form-control" />
+                <span asp-validation-for="QuantityRequired" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -4,13 +4,12 @@
 {
     <tr>
         <td>@tab.Id</td>
-        <td>@tab.TabCode</td>
         <td>@tab.TableNumber</td>
         <td>@tab.Status</td>
         <td class="text-end">
-            <a asp-action="Details" asp-route-id="@tab.Id">Details</a>
+            <a asp-action="Details" asp-route-id="@tab.Id" class="ajax-modal-link" data-title="Table">Details</a>
             <span class="mx-2">|</span>
-            <a asp-action="Edit" asp-route-id="@tab.Id">Edit</a>
+            <a asp-action="Edit" asp-route-id="@tab.Id" class="ajax-modal-link" data-title="Table">Edit</a>
             <span class="mx-2">|</span>
             <a asp-action="Delete" asp-route-id="@tab.Id">Delete</a>
         </td>

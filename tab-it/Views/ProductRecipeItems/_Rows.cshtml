@@ -1,0 +1,40 @@
+@model IReadOnlyList<ProductRecipeItem>
+
+@{
+    var recipes = Model
+        .GroupBy(r => r.ProductId)
+        .Select(g => new { Product = g.First().Product, Items = g.ToList() })
+        .Where(g => g.Product is not null)
+        .OrderBy(g => g.Product!.Name)
+        .ToList();
+}
+
+@foreach (var recipe in recipes)
+{
+    var product = recipe.Product!;
+    var ingredients = recipe.Items
+        .OrderBy(r => r.InventoryItem?.Name)
+        .Select(r => r.InventoryItem?.Name ?? $"Inventory {r.InventoryItemId}")
+        .ToList();
+    var detailsUrl = Url.Action("RecipeDetails", new { id = product.Id }) ?? "#";
+
+    <tr class="clickable-table-row ajax-row-link" data-href="@detailsUrl" data-title="@product.Name">
+        <td>
+            <strong>@product.Name</strong>
+            <div class="text-muted small">@product.Sku</div>
+        </td>
+        <td>@(product.Category?.Name ?? "-")</td>
+        <td>@recipe.Items.Count</td>
+        <td>@string.Join(", ", ingredients)</td>
+        <td class="text-end">
+            <a asp-action="RecipeDetails" asp-route-id="@product.Id" class="ajax-modal-link safe-action" data-title="@product.Name">Details</a>
+        </td>
+    </tr>
+}
+
+@if (!recipes.Any())
+{
+    <tr>
+        <td colspan="5" class="text-center text-muted py-4">No recipes found.</td>
+    </tr>
+}

@@ -35,7 +35,8 @@ namespace tab_it.Migrations
 
                     b.Property<string>("Notes")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("OpenedAt")
                         .HasColumnType("datetime(6)");
@@ -48,7 +49,8 @@ namespace tab_it.Migrations
 
                     b.Property<string>("TabCode")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
 
                     b.Property<int>("TableNumber")
                         .HasColumnType("int");
@@ -83,6 +85,273 @@ namespace tab_it.Migrations
                         });
                 });
 
+            modelBuilder.Entity("tab_it.Models.Domain.InventoryItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("LastRestockedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
+
+                    b.Property<decimal>("QuantityOnHand")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("ReorderLevel")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)");
+
+                    b.Property<int>("Unit")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InventoryItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Coffee Beans",
+                            QuantityOnHand = 5.000m,
+                            ReorderLevel = 1.000m,
+                            Sku = "INV-COF-BEAN",
+                            Unit = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Milk",
+                            QuantityOnHand = 12.000m,
+                            ReorderLevel = 2.000m,
+                            Sku = "INV-MILK",
+                            Unit = 3
+                        },
+                        new
+                        {
+                            Id = 3,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Coca Cola 0.33L Can",
+                            QuantityOnHand = 100.000m,
+                            ReorderLevel = 12.000m,
+                            Sku = "INV-COLA-033",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Fanta 0.33L Can",
+                            QuantityOnHand = 80.000m,
+                            ReorderLevel = 12.000m,
+                            Sku = "INV-FANTA-033",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Sprite 0.33L Can",
+                            QuantityOnHand = 80.000m,
+                            ReorderLevel = 12.000m,
+                            Sku = "INV-SPRITE-033",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Still Water 0.5L Bottle",
+                            QuantityOnHand = 90.000m,
+                            ReorderLevel = 18.000m,
+                            Sku = "INV-WATER-050",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Orange Juice",
+                            QuantityOnHand = 10.000m,
+                            ReorderLevel = 2.000m,
+                            Sku = "INV-ORANGE-JUICE",
+                            Unit = 3
+                        },
+                        new
+                        {
+                            Id = 8,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Chocolate Cake Slice",
+                            QuantityOnHand = 18.000m,
+                            ReorderLevel = 4.000m,
+                            Sku = "INV-CAKE-CHOC",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Tiramisu Slice",
+                            QuantityOnHand = 16.000m,
+                            ReorderLevel = 4.000m,
+                            Sku = "INV-TIRAMISU",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Cheesecake Slice",
+                            QuantityOnHand = 16.000m,
+                            ReorderLevel = 4.000m,
+                            Sku = "INV-CHEESECAKE",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Apple Pie Slice",
+                            QuantityOnHand = 14.000m,
+                            ReorderLevel = 4.000m,
+                            Sku = "INV-APPLE-PIE",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Croissant",
+                            QuantityOnHand = 24.000m,
+                            ReorderLevel = 6.000m,
+                            Sku = "INV-CROISSANT",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Blueberry Muffin",
+                            QuantityOnHand = 20.000m,
+                            ReorderLevel = 5.000m,
+                            Sku = "INV-MUFFIN-BLUE",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Brownie",
+                            QuantityOnHand = 20.000m,
+                            ReorderLevel = 5.000m,
+                            Sku = "INV-BROWNIE",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Burger Patty",
+                            QuantityOnHand = 30.000m,
+                            ReorderLevel = 8.000m,
+                            Sku = "INV-BURGER-PATTY",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Burger Bun",
+                            QuantityOnHand = 30.000m,
+                            ReorderLevel = 8.000m,
+                            Sku = "INV-BURGER-BUN",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Pizza Dough",
+                            QuantityOnHand = 25.000m,
+                            ReorderLevel = 6.000m,
+                            Sku = "INV-PIZZA-DOUGH",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Pepperoni",
+                            QuantityOnHand = 3.000m,
+                            ReorderLevel = 0.500m,
+                            Sku = "INV-PEPPERONI",
+                            Unit = 2
+                        },
+                        new
+                        {
+                            Id = 19,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Cheese",
+                            QuantityOnHand = 5.000m,
+                            ReorderLevel = 1.000m,
+                            Sku = "INV-CHEESE",
+                            Unit = 2
+                        },
+                        new
+                        {
+                            Id = 20,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Sandwich Bread",
+                            QuantityOnHand = 60.000m,
+                            ReorderLevel = 12.000m,
+                            Sku = "INV-SAND-BREAD",
+                            Unit = 1
+                        },
+                        new
+                        {
+                            Id = 21,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Chicken",
+                            QuantityOnHand = 6.000m,
+                            ReorderLevel = 1.000m,
+                            Sku = "INV-CHICKEN",
+                            Unit = 2
+                        },
+                        new
+                        {
+                            Id = 22,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Lettuce",
+                            QuantityOnHand = 3.000m,
+                            ReorderLevel = 0.700m,
+                            Sku = "INV-LETTUCE",
+                            Unit = 2
+                        },
+                        new
+                        {
+                            Id = 23,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Caesar Dressing",
+                            QuantityOnHand = 4.000m,
+                            ReorderLevel = 0.750m,
+                            Sku = "INV-CAESAR-DRESS",
+                            Unit = 3
+                        });
+                });
+
             modelBuilder.Entity("tab_it.Models.Domain.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -99,7 +368,8 @@ namespace tab_it.Migrations
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
 
                     b.Property<DateTime>("OrderedAt")
                         .HasColumnType("datetime(6)");
@@ -127,7 +397,7 @@ namespace tab_it.Migrations
                             DiscountPercent = 0m,
                             OrderNumber = "ORD-001",
                             OrderedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = 4,
+                            Status = 5,
                             Subtotal = 15.49m,
                             Total = 15.49m
                         },
@@ -138,7 +408,7 @@ namespace tab_it.Migrations
                             DiscountPercent = 10m,
                             OrderNumber = "ORD-002",
                             OrderedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = 4,
+                            Status = 5,
                             Subtotal = 18.50m,
                             Total = 16.65m
                         });
@@ -154,7 +424,8 @@ namespace tab_it.Migrations
 
                     b.Property<string>("ItemNote")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<decimal>("LineTotal")
                         .HasColumnType("decimal(65,30)");
@@ -241,14 +512,16 @@ namespace tab_it.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
 
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(65,30)");
@@ -266,7 +539,7 @@ namespace tab_it.Migrations
                             AvailableQuantity = 100,
                             IsAlcoholic = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Cola",
+                            Name = "Coca Cola 0.33L",
                             ProductCategoryId = 1,
                             Sku = "BEV-001",
                             UnitPrice = 2.50m
@@ -277,7 +550,7 @@ namespace tab_it.Migrations
                             AvailableQuantity = 50,
                             IsAlcoholic = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Coffee",
+                            Name = "Coffee with Milk",
                             ProductCategoryId = 1,
                             Sku = "BEV-002",
                             UnitPrice = 3.00m
@@ -314,6 +587,171 @@ namespace tab_it.Migrations
                             ProductCategoryId = 3,
                             Sku = "DES-001",
                             UnitPrice = 6.00m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Espresso",
+                            ProductCategoryId = 1,
+                            Sku = "BEV-003",
+                            UnitPrice = 2.20m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Cappuccino",
+                            ProductCategoryId = 1,
+                            Sku = "BEV-004",
+                            UnitPrice = 3.40m
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Latte",
+                            ProductCategoryId = 1,
+                            Sku = "BEV-005",
+                            UnitPrice = 3.60m
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Fanta 0.33L",
+                            ProductCategoryId = 1,
+                            Sku = "BEV-006",
+                            UnitPrice = 2.50m
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Sprite 0.33L",
+                            ProductCategoryId = 1,
+                            Sku = "BEV-007",
+                            UnitPrice = 2.50m
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Still Water 0.5L",
+                            ProductCategoryId = 1,
+                            Sku = "BEV-008",
+                            UnitPrice = 1.80m
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Orange Juice",
+                            ProductCategoryId = 1,
+                            Sku = "BEV-009",
+                            UnitPrice = 3.20m
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Tiramisu",
+                            ProductCategoryId = 3,
+                            Sku = "DES-002",
+                            UnitPrice = 5.50m
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Cheesecake",
+                            ProductCategoryId = 3,
+                            Sku = "DES-003",
+                            UnitPrice = 5.80m
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Apple Pie",
+                            ProductCategoryId = 3,
+                            Sku = "DES-004",
+                            UnitPrice = 4.80m
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Croissant",
+                            ProductCategoryId = 3,
+                            Sku = "DES-005",
+                            UnitPrice = 2.70m
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Blueberry Muffin",
+                            ProductCategoryId = 3,
+                            Sku = "DES-006",
+                            UnitPrice = 3.10m
+                        },
+                        new
+                        {
+                            Id = 18,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Club Sandwich",
+                            ProductCategoryId = 2,
+                            Sku = "MAI-003",
+                            UnitPrice = 8.90m
+                        },
+                        new
+                        {
+                            Id = 19,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Caesar Salad",
+                            ProductCategoryId = 2,
+                            Sku = "MAI-004",
+                            UnitPrice = 7.80m
+                        },
+                        new
+                        {
+                            Id = 20,
+                            AvailableQuantity = 0,
+                            IsAlcoholic = false,
+                            LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Brownie",
+                            ProductCategoryId = 3,
+                            Sku = "DES-007",
+                            UnitPrice = 3.90m
                         });
                 });
 
@@ -327,11 +765,13 @@ namespace tab_it.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
 
                     b.HasKey("Id");
 
@@ -358,6 +798,244 @@ namespace tab_it.Migrations
                         });
                 });
 
+            modelBuilder.Entity("tab_it.Models.Domain.ProductRecipeItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("InventoryItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("QuantityRequired")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InventoryItemId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductRecipeItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            InventoryItemId = 3,
+                            ProductId = 1,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            InventoryItemId = 1,
+                            ProductId = 2,
+                            QuantityRequired = 0.012m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            InventoryItemId = 2,
+                            ProductId = 2,
+                            QuantityRequired = 0.100m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            InventoryItemId = 15,
+                            ProductId = 3,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            InventoryItemId = 16,
+                            ProductId = 3,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            InventoryItemId = 17,
+                            ProductId = 4,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            InventoryItemId = 18,
+                            ProductId = 4,
+                            QuantityRequired = 0.050m
+                        },
+                        new
+                        {
+                            Id = 8,
+                            InventoryItemId = 19,
+                            ProductId = 4,
+                            QuantityRequired = 0.120m
+                        },
+                        new
+                        {
+                            Id = 9,
+                            InventoryItemId = 8,
+                            ProductId = 5,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 10,
+                            InventoryItemId = 1,
+                            ProductId = 6,
+                            QuantityRequired = 0.009m
+                        },
+                        new
+                        {
+                            Id = 11,
+                            InventoryItemId = 1,
+                            ProductId = 7,
+                            QuantityRequired = 0.012m
+                        },
+                        new
+                        {
+                            Id = 12,
+                            InventoryItemId = 2,
+                            ProductId = 7,
+                            QuantityRequired = 0.100m
+                        },
+                        new
+                        {
+                            Id = 13,
+                            InventoryItemId = 1,
+                            ProductId = 8,
+                            QuantityRequired = 0.012m
+                        },
+                        new
+                        {
+                            Id = 14,
+                            InventoryItemId = 2,
+                            ProductId = 8,
+                            QuantityRequired = 0.180m
+                        },
+                        new
+                        {
+                            Id = 15,
+                            InventoryItemId = 4,
+                            ProductId = 9,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 16,
+                            InventoryItemId = 5,
+                            ProductId = 10,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 17,
+                            InventoryItemId = 6,
+                            ProductId = 11,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 18,
+                            InventoryItemId = 7,
+                            ProductId = 12,
+                            QuantityRequired = 0.250m
+                        },
+                        new
+                        {
+                            Id = 19,
+                            InventoryItemId = 9,
+                            ProductId = 13,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 20,
+                            InventoryItemId = 10,
+                            ProductId = 14,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 21,
+                            InventoryItemId = 11,
+                            ProductId = 15,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 22,
+                            InventoryItemId = 12,
+                            ProductId = 16,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 23,
+                            InventoryItemId = 13,
+                            ProductId = 17,
+                            QuantityRequired = 1.000m
+                        },
+                        new
+                        {
+                            Id = 24,
+                            InventoryItemId = 20,
+                            ProductId = 18,
+                            QuantityRequired = 2.000m
+                        },
+                        new
+                        {
+                            Id = 25,
+                            InventoryItemId = 21,
+                            ProductId = 18,
+                            QuantityRequired = 0.120m
+                        },
+                        new
+                        {
+                            Id = 26,
+                            InventoryItemId = 22,
+                            ProductId = 18,
+                            QuantityRequired = 0.030m
+                        },
+                        new
+                        {
+                            Id = 27,
+                            InventoryItemId = 21,
+                            ProductId = 19,
+                            QuantityRequired = 0.120m
+                        },
+                        new
+                        {
+                            Id = 28,
+                            InventoryItemId = 22,
+                            ProductId = 19,
+                            QuantityRequired = 0.120m
+                        },
+                        new
+                        {
+                            Id = 29,
+                            InventoryItemId = 23,
+                            ProductId = 19,
+                            QuantityRequired = 0.030m
+                        },
+                        new
+                        {
+                            Id = 30,
+                            InventoryItemId = 14,
+                            ProductId = 20,
+                            QuantityRequired = 1.000m
+                        });
+                });
+
             modelBuilder.Entity("tab_it.Models.Domain.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -368,11 +1046,13 @@ namespace tab_it.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
 
                     b.HasKey("Id");
 
@@ -406,29 +1086,34 @@ namespace tab_it.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
 
                     b.HasKey("Id");
 
@@ -503,6 +1188,25 @@ namespace tab_it.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("tab_it.Models.Domain.ProductRecipeItem", b =>
+                {
+                    b.HasOne("tab_it.Models.Domain.InventoryItem", "InventoryItem")
+                        .WithMany("RecipeItems")
+                        .HasForeignKey("InventoryItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("tab_it.Models.Domain.Product", "Product")
+                        .WithMany("RecipeItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InventoryItem");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("tab_it.Models.Domain.User", b =>
                 {
                     b.HasOne("tab_it.Models.Domain.Role", "Role")
@@ -519,6 +1223,11 @@ namespace tab_it.Migrations
                     b.Navigation("Orders");
                 });
 
+            modelBuilder.Entity("tab_it.Models.Domain.InventoryItem", b =>
+                {
+                    b.Navigation("RecipeItems");
+                });
+
             modelBuilder.Entity("tab_it.Models.Domain.Order", b =>
                 {
                     b.Navigation("Items");
@@ -527,6 +1236,8 @@ namespace tab_it.Migrations
             modelBuilder.Entity("tab_it.Models.Domain.Product", b =>
                 {
                     b.Navigation("OrderItems");
+
+                    b.Navigation("RecipeItems");
                 });
 
             modelBuilder.Entity("tab_it.Models.Domain.ProductCategory", b =>

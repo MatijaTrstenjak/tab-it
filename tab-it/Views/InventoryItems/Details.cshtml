@@ -1,0 +1,14 @@
+@model InventoryItem
+
+<section class="app-panel">
+    <h1>Inventory Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Id</dd>
+        <dt class="col-sm-3">Name</dt><dd class="col-sm-9">@Model.Name</dd>
+        <dt class="col-sm-3">SKU</dt><dd class="col-sm-9">@Model.Sku</dd>
+        <dt class="col-sm-3">Unit</dt><dd class="col-sm-9">@Model.Unit</dd>
+        <dt class="col-sm-3">Stock</dt><dd class="col-sm-9">@Model.QuantityOnHand.ToString("0.###")</dd>
+        <dt class="col-sm-3">Reorder Level</dt><dd class="col-sm-9">@Model.ReorderLevel.ToString("0.###")</dd>
+        <dt class="col-sm-3">Last Restocked</dt><dd class="col-sm-9">@Model.LastRestockedAt</dd>
+    </dl>
+</section>

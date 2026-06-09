@@ -16,12 +16,20 @@ public class EFOrderRepository : IOrderRepository
 
     public IReadOnlyList<Order> GetAll()
     {
-        return _context.Orders.Include(o => o.CustomerTab).ToList();
+        return _context.Orders
+            .Include(o => o.CustomerTab)
+            .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+            .ToList();
     }
 
     public Order? GetById(int id)
     {
-        return _context.Orders.Include(o => o.CustomerTab).FirstOrDefault(o => o.Id == id);
+        return _context.Orders
+            .Include(o => o.CustomerTab)
+            .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+            .FirstOrDefault(o => o.Id == id);
     }
 
     public void Add(Order order)

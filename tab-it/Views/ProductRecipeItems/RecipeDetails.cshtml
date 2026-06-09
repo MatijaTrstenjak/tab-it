@@ -1,0 +1,48 @@
+@model Product
+
+<section class="app-panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h1 class="m-0">@Model.Name</h1>
+            <p class="app-panel-lead mb-0">Recipe details for this menu item.</p>
+        </div>
+        <span class="fw-bold text-muted">@Model.UnitPrice.ToString("C")</span>
+    </div>
+
+    <dl class="row mb-4">
+        <dt class="col-sm-4">Category</dt>
+        <dd class="col-sm-8">@(Model.Category?.Name ?? "-")</dd>
+        <dt class="col-sm-4">SKU</dt>
+        <dd class="col-sm-8">@Model.Sku</dd>
+        <dt class="col-sm-4">Ingredients</dt>
+        <dd class="col-sm-8">@Model.RecipeItems.Count</dd>
+    </dl>
+
+    <div class="table-responsive">
+        <table class="table app-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Inventory item</th>
+                    <th>Required</th>
+                    <th>On hand</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RecipeItems.OrderBy(r => r.InventoryItem?.Name))
+                {
+                    <tr>
+                        <td>@(item.InventoryItem?.Name ?? $"Inventory {item.InventoryItemId}")</td>
+                        <td>@item.QuantityRequired.ToString("0.###") @(item.InventoryItem?.Unit.ToString() ?? string.Empty)</td>
+                        <td>@(item.InventoryItem?.QuantityOnHand.ToString("0.###") ?? "-") @(item.InventoryItem?.Unit.ToString() ?? string.Empty)</td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="ajax-modal-link" data-title="Recipe Ingredient">Edit</a>
+                            <span class="mx-2">|</span>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="ajax-modal-link" data-title="Recipe Ingredient">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

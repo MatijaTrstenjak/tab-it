@@ -15,5 +15,25 @@
         <dt class="col-sm-3">Available Qty</dt><dd class="col-sm-9">@Model.AvailableQuantity</dd>
         <dt class="col-sm-3">Category</dt><dd class="col-sm-9"><a asp-controller="ProductCategories" asp-action="Details" asp-route-id="@Model.ProductCategoryId">Category @Model.ProductCategoryId</a></dd>
     </dl>
+    <h2 class="mt-4">Recipe</h2>
+    @if (Model.RecipeItems.Any())
+    {
+        <table class="table app-table">
+            <thead><tr><th>Inventory</th><th>Quantity</th></tr></thead>
+            <tbody>
+                @foreach (var recipe in Model.RecipeItems)
+                {
+                    <tr>
+                        <td>@(recipe.InventoryItem?.Name ?? $"Inventory {recipe.InventoryItemId}")</td>
+                        <td>@recipe.QuantityRequired.ToString("0.###") @(recipe.InventoryItem?.Unit.ToString() ?? string.Empty)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>This menu item uses direct product quantity stock.</p>
+    }
     <a class="btn btn-outline-secondary" asp-action="Index">Back to list</a>
 </section>

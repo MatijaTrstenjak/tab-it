@@ -3,18 +3,24 @@
     ViewData["HideShell"] = true;
     Layout = "_Layout";
 }
-@using tab_it.Models.Domain
 @using System.Text.Json
 
 <style>
     :root {
-        --pos-bg: #F9F6F0; /* warm beige */
+        --pos-bg: #f3f0e8;
+        --pos-soft: #f8f6f0;
         --pos-card: #FFFFFF;
-        --pos-border: #000000;
-        --pos-accent: #E88B00; /* warm orange */
+        --pos-border: rgba(0, 0, 0, 0.08);
+        --pos-accent: #FBB117;
+        --pos-accent-strong: #df9800;
+        --pos-secondary: #245C50;
+        --pos-secondary-soft: #e6f1ee;
         --pos-text: #1C1C1C;
-        --pos-radius: 12px;
+        --pos-muted: #62605a;
+        --pos-radius: 16px;
         --pos-pill: 9999px;
+        --pos-shadow: 0 10px 34px rgba(0, 0, 0, 0.08);
+        --pos-shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.05);
     }
 
     body.pos-mode {
@@ -28,11 +34,11 @@
 
     .pos-container {
         display: grid;
-        grid-template-columns: 200px 1fr 300px;
+        grid-template-columns: 220px 1fr 340px;
         height: 100vh;
         width: 100%;
-        gap: 1rem;
-        padding: 1rem;
+        gap: 1.1rem;
+        padding: 1.1rem;
         box-sizing: border-box;
         background-color: var(--pos-bg);
     }
@@ -40,10 +46,10 @@
     /* Common Card Styles */
     .pos-panel {
         background: var(--pos-card);
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-radius);
         padding: 1rem;
-        box-shadow: 4px 4px 0px rgba(0,0,0,1); /* Neo-brutalist touch */
+        box-shadow: var(--pos-shadow-soft);
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -55,7 +61,7 @@
         font-size: 1.25rem;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--pos-border);
+        border-bottom: 1px solid var(--pos-border);
     }
 
     /* Left: Categories */
@@ -68,7 +74,7 @@
     
     .category-btn {
         background: var(--pos-bg);
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-pill);
         padding: 0.75rem 1rem;
         font-weight: bold;
@@ -82,8 +88,8 @@
     }
     .category-btn.active {
         background: var(--pos-accent);
-        color: #fff;
-        box-shadow: 2px 2px 0px rgba(0,0,0,1);
+        color: var(--pos-text);
+        box-shadow: var(--pos-shadow-soft);
     }
 
     /* Middle: Products */
@@ -98,7 +104,7 @@
 
     .product-card {
         background: var(--pos-card);
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-radius);
         padding: 1rem;
         text-align: center;
@@ -109,14 +115,24 @@
         justify-content: space-between;
         min-height: 120px;
         user-select: none;
+        box-shadow: inset 0 0 0 1px var(--pos-border);
     }
     .product-card:hover {
         transform: translateY(-2px);
-        box-shadow: 4px 4px 0px rgba(0,0,0,1);
+        box-shadow: var(--pos-shadow-soft);
     }
     .product-card:active {
-        transform: translateY(2px);
-        box-shadow: 0px 0px 0px rgba(0,0,0,1);
+        transform: translateY(1px);
+        box-shadow: inset 0 0 0 1px var(--pos-border);
+    }
+    .product-card.disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        filter: grayscale(0.3);
+    }
+    .product-card.disabled:hover {
+        transform: none;
+        box-shadow: inset 0 0 0 1px var(--pos-border);
     }
     .product-name {
         font-weight: 600;
@@ -138,10 +154,10 @@
     .receipt-items {
         flex: 1;
         overflow-y: auto;
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-radius);
         padding: 0.5rem;
-        background: var(--pos-bg);
+        background: var(--pos-soft);
         margin-bottom: 1rem;
     }
     .receipt-item {
@@ -149,7 +165,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem 0.5rem;
-        border-bottom: 1px dashed var(--pos-border);
+        border-bottom: 1px solid var(--pos-border);
     }
     .receipt-item:last-child {
         border-bottom: none;
@@ -157,8 +173,8 @@
     .item-qty {
         font-weight: bold;
         margin-right: 0.5rem;
-        background: var(--pos-border);
-        color: white;
+        background: var(--pos-secondary);
+        color: #ffffff;
         padding: 2px 8px;
         border-radius: 12px;
         font-size: 0.9em;
@@ -179,26 +195,26 @@
         justify-content: space-between;
         margin-bottom: 1rem;
         padding-top: 1rem;
-        border-top: 2px solid var(--pos-border);
+        border-top: 1px solid var(--pos-border);
     }
 
     .btn-checkout {
         background: var(--pos-accent);
-        color: #fff;
-        border: 2px solid var(--pos-border);
+        color: var(--pos-text);
+        border: 0;
         border-radius: var(--pos-pill);
         padding: 1.25rem;
         font-weight: 900;
         font-size: 1.25rem;
         cursor: pointer;
         text-transform: uppercase;
-        box-shadow: 4px 4px 0px rgba(0,0,0,1);
+        box-shadow: var(--pos-shadow-soft);
         transition: transform 0.1s ease, box-shadow 0.1s ease;
         margin-top: auto;
     }
     .btn-checkout:active {
         transform: translateY(4px);
-        box-shadow: 0px 0px 0px rgba(0,0,0,1);
+        box-shadow: none;
     }
     .btn-checkout:hover {
         filter: brightness(1.05);
@@ -211,7 +227,7 @@
         align-items: center;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--pos-border);
+        border-bottom: 1px solid var(--pos-border);
     }
     .pos-nav-logo {
         font-weight: 900;
@@ -226,11 +242,12 @@
         font-weight: bold;
         color: var(--pos-text);
         text-decoration: none;
-        border: 2px solid var(--pos-border);
+        border: 0;
         padding: 0.25rem 0.75rem;
         border-radius: var(--pos-pill);
         transition: background 0.2s;
         font-size: 0.9rem;
+        background: var(--pos-soft);
     }
     .pos-nav-exit:hover {
         background: #f0f0f0;
@@ -245,16 +262,40 @@
     }
 
     .pos-tab-current {
-        font-weight: 700;
-        margin-bottom: 0.75rem;
+        width: 100%;
+        border: 0;
+        border-radius: var(--pos-radius);
+        background: var(--pos-secondary-soft);
+        color: var(--pos-secondary);
+        padding: 0.85rem;
+        margin-bottom: 0.85rem;
+        text-align: left;
+        cursor: pointer;
+        box-shadow: inset 0 0 0 1px rgba(36, 92, 80, 0.12);
+    }
+
+    .pos-tab-current-label {
+        display: block;
+        color: var(--pos-muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .pos-tab-current-value {
+        display: block;
+        margin-top: 0.15rem;
+        font-size: 1rem;
+        font-weight: 900;
     }
 
     .pos-tab-btn {
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-pill);
         padding: 0.4rem 0.85rem;
         font-weight: 800;
-        background: var(--pos-bg);
+        background: var(--pos-secondary);
+        color: #ffffff;
         cursor: pointer;
     }
 
@@ -273,12 +314,12 @@
     }
 
     .pos-tab-panel {
-        width: min(560px, 90vw);
+        width: min(680px, 92vw);
         background: var(--pos-card);
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-radius);
-        box-shadow: 8px 8px 0px rgba(0,0,0,1);
-        padding: 1rem;
+        box-shadow: var(--pos-shadow);
+        padding: 1.1rem;
         box-sizing: border-box;
     }
 
@@ -289,7 +330,7 @@
         gap: 1rem;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--pos-border);
+        border-bottom: 1px solid var(--pos-border);
     }
 
     .pos-tab-panel-title {
@@ -298,26 +339,25 @@
     }
 
     .pos-tab-panel-close {
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-pill);
         padding: 0.25rem 0.75rem;
         font-weight: 800;
-        background: var(--pos-bg);
+        background: var(--pos-soft);
         cursor: pointer;
     }
 
     .pos-open-tabs {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.7rem;
         margin-bottom: 1rem;
+        max-height: 46vh;
+        overflow-y: auto;
     }
 
     .pos-tab-entry {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        justify-content: space-between;
+        display: block;
     }
 
     .pos-tab-actions {
@@ -327,28 +367,89 @@
     }
 
     .pos-open-tab-btn {
-        border: 2px solid var(--pos-border);
-        border-radius: var(--pos-pill);
-        padding: 0.4rem 0.75rem;
-        font-weight: 700;
-        background: var(--pos-bg);
+        width: 100%;
+        min-height: 88px;
+        border: 0;
+        border-radius: 14px;
+        padding: 0.75rem;
+        font-weight: 800;
+        background: var(--pos-soft);
+        color: var(--pos-text);
         cursor: pointer;
+        text-align: left;
+        box-shadow: inset 0 0 0 1px var(--pos-border);
     }
 
     .pos-open-tab-btn.active {
-        background: var(--pos-accent);
-        color: #fff;
-        box-shadow: 2px 2px 0px rgba(0,0,0,1);
+        background: var(--pos-secondary);
+        color: #ffffff;
+        box-shadow: var(--pos-shadow-soft);
     }
 
-    .pos-tab-status {
-        border: 2px solid var(--pos-border);
-        border-radius: var(--pos-radius);
-        padding: 0.35rem 0.6rem;
-        font-weight: 700;
-        background: #fff;
-        min-width: 140px;
+    .pos-tab-card-title {
+        display: block;
+        font-size: 1.05rem;
+    }
+
+    .pos-tab-card-sub {
+        display: block;
+        margin-top: 0.25rem;
+        color: currentColor;
+        opacity: 0.72;
+        font-size: 0.85rem;
+    }
+
+    .pos-tab-close {
+        border: 0;
+        border-radius: var(--pos-pill);
+        padding: 0.45rem 0.75rem;
+        font-weight: 900;
+        background: var(--pos-accent);
+        color: var(--pos-text);
+        width: 100%;
         box-sizing: border-box;
+        margin-top: 0.45rem;
+        cursor: pointer;
+    }
+
+    .pos-tab-close:disabled {
+        background: #e2e0d8;
+        color: #8a877f;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .pos-payment-methods {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .pos-payment-method {
+        border: 0;
+        border-radius: 14px;
+        padding: 1rem;
+        min-height: 88px;
+        background: var(--pos-soft);
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: inset 0 0 0 1px var(--pos-border);
+    }
+
+    .pos-payment-method.active {
+        background: var(--pos-secondary);
+        color: #ffffff;
+        box-shadow: var(--pos-shadow-soft);
+    }
+
+    .pos-payment-summary {
+        background: var(--pos-secondary-soft);
+        color: var(--pos-secondary);
+        border-radius: var(--pos-radius);
+        padding: 0.85rem;
+        margin-bottom: 1rem;
+        font-weight: 800;
     }
 
     .pos-new-tab {
@@ -359,26 +460,55 @@
     }
 
     .pos-new-tab input {
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-radius);
         padding: 0.5rem 0.6rem;
         font-weight: 600;
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
+        background: var(--pos-soft);
     }
 
     .pos-new-tab button {
         grid-column: span 2;
-        border: 2px solid var(--pos-border);
+        border: 0;
         border-radius: var(--pos-pill);
         padding: 0.6rem 1rem;
         font-weight: 900;
         background: var(--pos-accent);
-        color: #fff;
+        color: var(--pos-text);
         cursor: pointer;
         width: 100%;
         box-sizing: border-box;
+    }
+
+    @@media (max-width: 1050px) {
+        .pos-container {
+            grid-template-columns: 180px 1fr;
+            overflow-y: auto;
+            height: auto;
+            min-height: 100vh;
+        }
+
+        .pos-receipt {
+            grid-column: 1 / -1;
+            min-height: 420px;
+        }
+    }
+
+    @@media (max-width: 720px) {
+        body.pos-mode {
+            overflow: auto;
+        }
+
+        .pos-container {
+            grid-template-columns: 1fr;
+        }
+
+        .pos-payment-methods {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -390,7 +520,7 @@
                 <img src="~/images/tab-it.svg" width="20" height="20" alt="" />
                 <span>tab_it</span>
             </a>
-            <a href="/" class="pos-nav-exit">Exit</a>
+            <a asp-controller="Home" asp-action="Dashboard" class="pos-nav-exit">Exit</a>
         </div>
         <h2 class="pos-panel-title">Categories</h2>
         <div class="pos-categories" id="categoryList">
@@ -410,9 +540,12 @@
     <div class="pos-panel pos-receipt">
         <div class="pos-tab-row">
             <h2 class="pos-panel-title" style="margin-bottom: 0;">Current Order</h2>
-            <button class="pos-tab-btn" type="button" onclick="openTabPanel()">Tabs</button>
+            <button class="pos-tab-btn" type="button" onclick="openTabPanel()">Change</button>
         </div>
-        <div class="pos-tab-current" id="currentTabLabel">No tab selected</div>
+        <button class="pos-tab-current" id="currentTabButton" type="button" onclick="openTabPanel()">
+            <span class="pos-tab-current-label">Active table</span>
+            <span class="pos-tab-current-value" id="currentTabLabel">No tab selected</span>
+        </button>
         @Html.AntiForgeryToken()
         <div class="receipt-items" id="receiptList">
             <!-- Populated by JS -->
@@ -423,7 +556,7 @@
             <span id="receiptTotal">$0.00</span>
         </div>
 
-        <button class="btn-checkout" onclick="checkout()">Pay / Charge</button>
+        <button class="btn-checkout" onclick="checkout()"> Send </button>
     </div>
 </div>
 
@@ -442,18 +575,36 @@
     </div>
 </div>
 
+<div class="pos-tab-overlay" id="paymentOverlay">
+    <div class="pos-tab-panel">
+        <div class="pos-tab-panel-header">
+            <div class="pos-tab-panel-title">Close Table</div>
+            <button class="pos-tab-panel-close" type="button" onclick="closePaymentPanel()">Cancel</button>
+        </div>
+        <div class="pos-payment-summary" id="paymentSummary">Select a payment method.</div>
+        <div class="pos-payment-methods">
+            <button class="pos-payment-method" type="button" data-payment="Cash" onclick="selectPaymentMethod('Cash')">Cash</button>
+            <button class="pos-payment-method" type="button" data-payment="Credit Card" onclick="selectPaymentMethod('Credit Card')">Credit Card</button>
+            <button class="pos-payment-method" type="button" data-payment="Debit Card" onclick="selectPaymentMethod('Debit Card')">Debit Card</button>
+        </div>
+        <button class="btn-checkout" type="button" onclick="closeTabWithPayment()">Generate Receipt</button>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         document.body.classList.add('pos-mode');
 
         // Data from Repositories
-        const categories = @Html.Raw(JsonSerializer.Serialize(ViewData["Categories"] ?? new List<ProductCategory>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
-        const products = @Html.Raw(JsonSerializer.Serialize(ViewData["Products"] ?? new List<Product>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
-        const tabs = @Html.Raw(JsonSerializer.Serialize(ViewData["Tabs"] ?? new List<CustomerTab>(), new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
+        const categories = @Html.Raw(JsonSerializer.Serialize(ViewData["Categories"] ?? Array.Empty<object>(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+        const products = @Html.Raw(JsonSerializer.Serialize(ViewData["Products"] ?? Array.Empty<object>(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+        const tabs = @Html.Raw(JsonSerializer.Serialize(ViewData["Tabs"] ?? Array.Empty<object>(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
 
         let currentCategoryId = null;
         let order = [];
         let currentTabId = null;
+        let closingTabId = null;
+        let selectedPaymentMethod = null;
 
         function renderTabs() {
             const openTabsList = document.getElementById('openTabsList');
@@ -467,7 +618,10 @@
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'pos-open-tab-btn' + (currentTabId === t.id ? ' active' : '');
-                btn.textContent = `Table ${t.tableNumber}`;
+                btn.innerHTML = `
+                    <span class="pos-tab-card-title">Table ${t.tableNumber}</span>
+                    <span class="pos-tab-card-sub">Open tab</span>
+                `;
                 btn.onclick = () => {
                     currentTabId = t.id;
                     renderTabs();
@@ -478,29 +632,51 @@
                 const actions = document.createElement('div');
                 actions.className = 'pos-tab-actions';
 
-                const statusSelect = document.createElement('select');
-                statusSelect.className = 'pos-tab-status';
-                statusSelect.innerHTML = `
-                    <option value="1">Open</option>
-                    <option value="2">Closed</option>
-                    <option value="3">Cancelled</option>
-                `;
-                statusSelect.value = String(t.status);
-                statusSelect.onchange = () => updateTabStatus(t.id, parseInt(statusSelect.value, 10));
+                const closeBtn = document.createElement('button');
+                closeBtn.type = 'button';
+                closeBtn.className = 'pos-tab-close';
+                closeBtn.disabled = !t.canClose;
+                closeBtn.textContent = t.canClose
+                    ? `Close - $${Number(t.total || 0).toFixed(2)}`
+                    : `${t.pendingOrders || 0} pending`;
+                closeBtn.onclick = event => {
+                    event.stopPropagation();
+                    if (t.canClose) {
+                        openPaymentPanel(t.id);
+                    }
+                };
 
-                actions.appendChild(statusSelect);
+                actions.appendChild(closeBtn);
                 entry.appendChild(btn);
                 entry.appendChild(actions);
                 openTabsList.appendChild(entry);
             });
+
+            if (openTabs.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-muted';
+                empty.textContent = 'No open tabs. Open a new table below.';
+                openTabsList.appendChild(empty);
+            }
         }
 
         function renderCurrentTab() {
             const label = document.getElementById('currentTabLabel');
             const tab = tabs.find(t => t.id === currentTabId);
             label.textContent = tab
-                ? `${tab.tabCode} (Table ${tab.tableNumber})`
+                ? `Table ${tab.tableNumber}`
                 : 'No tab selected';
+        }
+
+        function selectDefaultTab() {
+            if (currentTabId) {
+                return;
+            }
+
+            const openTabs = tabs.filter(t => t.status !== 2);
+            if (openTabs.length === 1) {
+                currentTabId = openTabs[0].id;
+            }
         }
 
         function openTabPanel() {
@@ -556,11 +732,49 @@
                 });
         }
 
-        function updateTabStatus(tabId, status) {
-            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-            const payload = { tabId, status };
+        function openPaymentPanel(tabId) {
+            const tab = tabs.find(t => t.id === tabId);
+            if (!tab || !tab.canClose) {
+                return;
+            }
 
-            fetch('@Url.Action("UpdateTabStatus", "Home")', {
+            closingTabId = tabId;
+            selectedPaymentMethod = null;
+            document.querySelectorAll('.pos-payment-method').forEach(button => button.classList.remove('active'));
+            document.getElementById('paymentSummary').textContent = `Table ${tab.tableNumber} total: $${Number(tab.total || 0).toFixed(2)}`;
+            document.getElementById('paymentOverlay').classList.add('active');
+        }
+
+        function closePaymentPanel() {
+            document.getElementById('paymentOverlay').classList.remove('active');
+            closingTabId = null;
+            selectedPaymentMethod = null;
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.pos-payment-method').forEach(button => {
+                button.classList.toggle('active', button.dataset.payment === method);
+            });
+        }
+
+        function closeTabWithPayment() {
+            if (!closingTabId) {
+                return;
+            }
+
+            if (!selectedPaymentMethod) {
+                alert('Select a payment method.');
+                return;
+            }
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const payload = {
+                tabId: closingTabId,
+                paymentMethod: selectedPaymentMethod
+            };
+
+            fetch('@Url.Action("CloseTab", "Home")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -571,24 +785,28 @@
                 .then(async response => {
                     if (!response.ok) {
                         const error = await response.json();
-                        throw new Error(error.message || 'Update tab failed.');
+                        throw new Error(error.message || 'Close tab failed.');
                     }
-                    return response.json();
+                    return response.blob();
                 })
-                .then(data => {
-                    const tab = tabs.find(t => t.id === data.id);
+                .then(blob => {
+                    const tab = tabs.find(t => t.id === closingTabId);
                     if (tab) {
-                        tab.status = data.status;
+                        tab.status = 2;
+                        tab.canClose = false;
                     }
-                    if (currentTabId === data.id && data.status === 2) {
+                    if (currentTabId === closingTabId) {
                         currentTabId = null;
                     }
+
+                    const receiptUrl = URL.createObjectURL(blob);
+                    window.open(receiptUrl, '_blank');
+                    closePaymentPanel();
                     renderTabs();
                     renderCurrentTab();
                 })
                 .catch(err => {
                     alert(err.message);
-                    renderTabs();
                 });
         }
 
@@ -629,10 +847,14 @@
             filtered.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
-                card.onclick = () => addToOrder(p);
+                if (!p.canSell) {
+                    card.classList.add('disabled');
+                } else {
+                    card.onclick = () => addToOrder(p);
+                }
                 card.innerHTML = `
                     <div class="product-name">${p.name}</div>
-                    <div class="product-price">$${p.unitPrice.toFixed(2)}</div>
+                    <div class="product-price">${p.canSell ? `$${p.unitPrice.toFixed(2)}` : 'Out of stock'}</div>
                 `;
                 list.appendChild(card);
             });
@@ -680,6 +902,7 @@
             }
 
             if (!currentTabId) {
+                openTabPanel();
                 alert("Select a customer tab first.");
                 return;
             }
@@ -710,7 +933,13 @@
                     return response.json();
                 })
                 .then(data => {
-                    alert(`Order ${data.orderNumber} charged. Total: $${Number(data.total).toFixed(2)}`);
+                    alert(`Order charged. Total: $${Number(data.total).toFixed(2)}`);
+                    const tab = tabs.find(t => t.id === currentTabId);
+                    if (tab) {
+                        tab.total = Number(tab.total || 0) + Number(data.total || 0);
+                        tab.pendingOrders = Number(tab.pendingOrders || 0) + 1;
+                        tab.canClose = false;
+                    }
                     order = [];
                     renderReceipt();
                 })
@@ -722,6 +951,7 @@
         // Initialize
         renderCategories();
         renderProducts();
+        selectDefaultTab();
         renderTabs();
         renderCurrentTab();
         renderReceipt();

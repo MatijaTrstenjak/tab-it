@@ -46,6 +46,11 @@ public class CustomerTabsController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(tab_it.Models.Domain.CustomerTab tab)
     {
+        if (tab.Status == tab_it.Models.Domain.TabStatus.Open && HasOpenTabForTable(tab.TableNumber))
+        {
+            ModelState.AddModelError(nameof(tab.TableNumber), $"Table {tab.TableNumber} already has an open tab.");
+        }
+
         if (ModelState.IsValid)
         {
             _tabRepository.Add(tab);
@@ -79,6 +84,11 @@ public class CustomerTabsController : Controller
         }
 
         var updated = await TryUpdateModelAsync(tab);
+        if (updated && tab.Status == tab_it.Models.Domain.TabStatus.Open && HasOpenTabForTable(tab.TableNumber, tab.Id))
+        {
+            ModelState.AddModelError(nameof(tab.TableNumber), $"Table {tab.TableNumber} already has an open tab.");
+        }
+
         if (updated && ModelState.IsValid)
         {
             _tabRepository.Update(tab);
@@ -156,5 +166,13 @@ public class CustomerTabsController : Controller
             });
 
         return Json(results);
+    }
+
+    private bool HasOpenTabForTable(int tableNumber, int? exceptTabId = null)
+    {
+        return _tabRepository.GetAllBasic()
+            .Any(t => t.TableNumber == tableNumber
+                      && t.Status == tab_it.Models.Domain.TabStatus.Open
+                      && (!exceptTabId.HasValue || t.Id != exceptTabId.Value));
     }
 }

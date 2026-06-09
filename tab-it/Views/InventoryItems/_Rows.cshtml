@@ -1,0 +1,18 @@
+@model IReadOnlyList<InventoryItem>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Id</td>
+        <td>@item.Name</td>
+        <td>@item.QuantityOnHand.ToString("0.###") @item.Unit</td>
+        <td>@item.ReorderLevel.ToString("0.###") @item.Unit</td>
+        <td class="text-end">
+            <a asp-action="Details" asp-route-id="@item.Id" class="ajax-modal-link" data-title="Inventory Item">Details</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Edit" asp-route-id="@item.Id" class="ajax-modal-link" data-title="Inventory Item">Edit</a>
+            <span class="mx-2">|</span>
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </td>
+    </tr>
+}
