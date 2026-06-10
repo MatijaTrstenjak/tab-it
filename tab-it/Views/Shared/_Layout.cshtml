@@ -14,6 +14,12 @@
 @{
     var hideShell = (ViewData["HideShell"] as bool?) == true;
     var bodyClass = ViewData["BodyClass"] as string ?? string.Empty;
+    var roleNames = User.Claims
+        .Where(c => c.Type == System.Security.Claims.ClaimTypes.Role)
+        .Select(c => c.Value)
+        .OrderBy(r => r)
+        .ToList();
+    var roleLabel = roleNames.Count == 0 ? "No role" : string.Join(", ", roleNames);
 }
 <body class="@bodyClass">
     <a class="app-skip-link" href="#app-main-content">Skip to main content</a>
@@ -28,34 +34,44 @@
             <nav class="app-menu" aria-label="Main menu" id="app-main-menu">
                 <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
                 <a asp-controller="Home" asp-action="POS">POS App</a>
-                <a asp-controller="Orders" asp-action="Index">Orders</a>
-                <a asp-controller="CustomerTabs" asp-action="Index">Tables</a>
-                <a asp-controller="Products" asp-action="Index">Menu</a>
-                <a asp-controller="InventoryItems" asp-action="Index">Inventory</a>
-                <a asp-controller="ProductRecipeItems" asp-action="Index">Recipes</a>
-                <a href="#">Accounting</a>
-                
-                <h6 class="app-menu-heading" style="margin-top: 2rem; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--app-muted); padding: 0 0.75rem;">Settings</h6>
-                <a asp-controller="Roles" asp-action="Index">Roles</a>
-                <a asp-controller="Users" asp-action="Index">Users</a>
-                <a asp-controller="ProductCategories" asp-action="Index">Product Categories</a>
-                <a asp-controller="OrderItems" asp-action="Index">Order Items</a>
+                <a asp-controller="Home" asp-action="Accounting">Accounting</a>
+
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <h6 class="app-menu-heading" style="margin-top: 2rem; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--app-muted); padding: 0 0.75rem;">Management</h6>
+                    <a asp-controller="Orders" asp-action="Index">Orders</a>
+                    <a asp-controller="CustomerTabs" asp-action="Index">Tables</a>
+                    <a asp-controller="Products" asp-action="Index">Menu</a>
+                    <a asp-controller="InventoryItems" asp-action="Index">Inventory</a>
+                    <a asp-controller="ProductRecipeItems" asp-action="Index">Recipes</a>
+                    <a asp-controller="ProductCategories" asp-action="Index">Product Categories</a>
+                    <a asp-controller="OrderItems" asp-action="Index">Order Items</a>
+                }
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <h6 class="app-menu-heading" style="margin-top: 2rem; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--app-muted); padding: 0 0.75rem;">Admin</h6>
+                    <a asp-controller="Users" asp-action="Index">Users</a>
+                    <a asp-controller="Roles" asp-action="Index">Roles</a>
+                }
             </nav>
             <div class="app-sidebar-footer" style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--app-border);">
                 <div style="display: flex; align-items: center; gap: 8px; padding: 0 0.5rem;">
                     <div style="width: 32px; height: 32px; background: var(--app-accent-soft); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--app-accent-strong); font-weight: bold;">
-                        U
+                        @((User.Identity?.Name ?? "U").Substring(0, 1).ToUpperInvariant())
                     </div>
                     <div style="flex: 1; overflow: hidden;">
-                        <div style="font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--app-text);">User Name</div>
-                        <div style="font-size: 0.75rem; color: var(--app-muted);">Admin</div>
+                        <div style="font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--app-text);">@(User.Identity?.Name ?? "Guest")</div>
+                        <div style="font-size: 0.75rem; color: var(--app-muted);">@roleLabel</div>
                     </div>
-                    <a href="#" style="color: var(--app-muted); text-decoration: none; padding: 4px; display: flex;" title="Logout">
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin: 0;">
+                    <button type="submit" style="border: 0; background: transparent; color: var(--app-muted); text-decoration: none; padding: 4px; display: flex;" title="Logout">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                           <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
                           <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
                         </svg>
-                    </a>
+                    </button>
+                    </form>
                 </div>
             </div>
         </aside>

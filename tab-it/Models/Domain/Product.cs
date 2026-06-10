@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tab_it.Models.Domain;
 
-public class Product
+public class Product : ISoftDeletable
 {
     [Key]
     public int Id { get; set; }
@@ -21,6 +21,8 @@ public class Product
     [Range(0, 999999)]
     public int AvailableQuantity { get; set; }
     public DateTime LastRestockedAt { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     [ForeignKey("Category")]
     [Range(1, int.MaxValue)]
@@ -30,4 +32,5 @@ public class Product
     // Bridge relation for N-N between orders and products.
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public virtual ICollection<ProductRecipeItem> RecipeItems { get; set; } = new List<ProductRecipeItem>();
+    public virtual ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
 }

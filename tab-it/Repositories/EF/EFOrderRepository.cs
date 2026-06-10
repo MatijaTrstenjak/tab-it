@@ -17,6 +17,8 @@ public class EFOrderRepository : IOrderRepository
     public IReadOnlyList<Order> GetAll()
     {
         return _context.Orders
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(o => o.CustomerTab)
             .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
@@ -26,6 +28,8 @@ public class EFOrderRepository : IOrderRepository
     public Order? GetById(int id)
     {
         return _context.Orders
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(o => o.CustomerTab)
             .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
@@ -52,7 +56,9 @@ public class EFOrderRepository : IOrderRepository
             return;
         }
 
-        _context.Orders.Remove(order);
+        order.IsDeleted = true;
+        order.DeletedAt = DateTime.UtcNow;
+        _context.Orders.Update(order);
         _context.SaveChanges();
     }
 }

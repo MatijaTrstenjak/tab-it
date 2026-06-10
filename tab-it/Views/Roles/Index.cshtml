@@ -1,4 +1,4 @@
-@model IReadOnlyList<Role>
+@model IReadOnlyList<tab_it.Models.ViewModels.IdentityRoleListItemViewModel>
 
 @section Breadcrumbs {
     <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Roles</li></ol></nav>
@@ -13,11 +13,11 @@
                    placeholder="Search roles"
                    data-search-url="@Url.Action("Search")"
                    data-target="#roles-table-body" />
-            <a asp-action="Create" class="btn btn-primary ajax-modal-link" data-title="Role">Add New</a>
+            <a asp-action="Create" class="btn btn-primary">Add New</a>
         </div>
     </div>
     <table class="table app-table">
-        <thead><tr><th>Id</th><th>Name</th><th>Description</th><th></th></tr></thead>
+        <thead><tr><th>Id</th><th>Name</th><th></th></tr></thead>
         <tbody id="roles-table-body">
             @await Html.PartialAsync("_Rows", Model)
         </tbody>

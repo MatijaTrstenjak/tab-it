@@ -1,16 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using tab_it.Models.Domain;
 
 namespace tab_it.DAL;
 
-public class TabItDbContext : DbContext
+public class TabItDbContext : IdentityDbContext<AppUser>
 {
     public TabItDbContext(DbContextOptions<TabItDbContext> options) : base(options)
     {
     }
 
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<Role> StaffRoles { get; set; }
+    public DbSet<User> StaffProfiles { get; set; }
     public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<CustomerTab> CustomerTabs { get; set; }
@@ -18,10 +19,27 @@ public class TabItDbContext : DbContext
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<InventoryItem> InventoryItems { get; set; }
     public DbSet<ProductRecipeItem> ProductRecipeItems { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Role>().ToTable("Roles");
+        modelBuilder.Entity<User>().ToTable("Users");
+        modelBuilder.Entity<ProductImage>().ToTable("ProductImages");
+
+        modelBuilder.Entity<AppUser>().HasQueryFilter(u => !u.IsDeleted);
+        modelBuilder.Entity<Role>().HasQueryFilter(r => !r.IsDeleted);
+        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+        modelBuilder.Entity<ProductCategory>().HasQueryFilter(c => !c.IsDeleted);
+        modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
+        modelBuilder.Entity<CustomerTab>().HasQueryFilter(t => !t.IsDeleted);
+        modelBuilder.Entity<Order>().HasQueryFilter(o => !o.IsDeleted);
+        modelBuilder.Entity<OrderItem>().HasQueryFilter(i => !i.IsDeleted);
+        modelBuilder.Entity<InventoryItem>().HasQueryFilter(i => !i.IsDeleted);
+        modelBuilder.Entity<ProductRecipeItem>().HasQueryFilter(i => !i.IsDeleted);
+        modelBuilder.Entity<ProductImage>().HasQueryFilter(i => !i.IsDeleted);
 
         // Seed some initial data for testing
         modelBuilder.Entity<Role>().HasData(
@@ -134,7 +152,7 @@ public class TabItDbContext : DbContext
 
         modelBuilder.Entity<CustomerTab>().HasData(
             new CustomerTab { Id = 1, TabCode = "TAB-001", TableNumber = 5, OpenedAt = new DateTime(2026, 5, 6, 12, 0, 0, DateTimeKind.Utc), Status = TabStatus.Open, OpenedByUserId = 1 },
-            new CustomerTab { Id = 2, TabCode = "TAB-002", TableNumber = 12, OpenedAt = new DateTime(2026, 5, 6, 10, 0, 0, DateTimeKind.Utc), ClosedAt = new DateTime(2026, 5, 6, 11, 30, 0, DateTimeKind.Utc), Status = TabStatus.Closed, OpenedByUserId = 1 }
+            new CustomerTab { Id = 2, TabCode = "TAB-002", TableNumber = 12, OpenedAt = new DateTime(2026, 5, 6, 10, 0, 0, DateTimeKind.Utc), ClosedAt = new DateTime(2026, 5, 6, 11, 30, 0, DateTimeKind.Utc), Status = TabStatus.Closed, OpenedByUserId = 1, PaymentMethod = "Cash" }
         );
 
         modelBuilder.Entity<Order>().HasData(

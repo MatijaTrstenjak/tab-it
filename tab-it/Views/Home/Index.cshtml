@@ -27,7 +27,15 @@
             <p class="ux-lead">A focused workspace for taking orders, preparing them, and keeping each table's tab clear during service.</p>
 
             <div class="ux-actions" aria-label="Primary actions">
-                <a class="ux-btn ux-btn-primary" asp-controller="Home" asp-action="Dashboard">Enter App</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a class="ux-btn ux-btn-primary" asp-controller="Home" asp-action="Dashboard">Enter App</a>
+                }
+                else
+                {
+                    <a class="ux-btn ux-btn-primary" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Dashboard", "Home")">Login into app</a>
+                    <a class="ux-btn" asp-controller="Account" asp-action="Register" asp-route-returnUrl="@Url.Action("Dashboard", "Home")">Create account</a>
+                }
             </div>
         </div>
         

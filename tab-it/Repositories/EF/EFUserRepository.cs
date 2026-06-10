@@ -16,35 +16,37 @@ public class EFUserRepository : IUserRepository
 
     public IReadOnlyList<User> GetAll()
     {
-        return _context.Users.Include(u => u.Role).ToList();
+        return _context.StaffProfiles.Include(u => u.Role).ToList();
     }
 
     public User? GetById(int id)
     {
-        return _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Id == id);
+        return _context.StaffProfiles.Include(u => u.Role).FirstOrDefault(u => u.Id == id);
     }
 
     public void Add(User user)
     {
-        _context.Users.Add(user);
+        _context.StaffProfiles.Add(user);
         _context.SaveChanges();
     }
 
     public void Update(User user)
     {
-        _context.Users.Update(user);
+        _context.StaffProfiles.Update(user);
         _context.SaveChanges();
     }
 
     public void Delete(int id)
     {
-        var user = _context.Users.Find(id);
+        var user = _context.StaffProfiles.Find(id);
         if (user is null)
         {
             return;
         }
 
-        _context.Users.Remove(user);
+        user.IsDeleted = true;
+        user.DeletedAt = DateTime.UtcNow;
+        _context.StaffProfiles.Update(user);
         _context.SaveChanges();
     }
 }

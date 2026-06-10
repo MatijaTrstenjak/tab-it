@@ -22,6 +22,218 @@ namespace tab_it.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("tab_it.Models.Domain.AppUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("JMBG")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("varchar(13)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("OIB")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar(11)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("tab_it.Models.Domain.CustomerTab", b =>
                 {
                     b.Property<int>("Id")
@@ -33,6 +245,12 @@ namespace tab_it.Migrations
                     b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -43,6 +261,11 @@ namespace tab_it.Migrations
 
                     b.Property<int>("OpenedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -65,9 +288,11 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 1,
+                            IsDeleted = false,
                             Notes = "",
                             OpenedAt = new DateTime(2026, 5, 6, 12, 0, 0, 0, DateTimeKind.Utc),
                             OpenedByUserId = 1,
+                            PaymentMethod = "",
                             Status = 1,
                             TabCode = "TAB-001",
                             TableNumber = 5
@@ -76,9 +301,11 @@ namespace tab_it.Migrations
                         {
                             Id = 2,
                             ClosedAt = new DateTime(2026, 5, 6, 11, 30, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
                             Notes = "",
                             OpenedAt = new DateTime(2026, 5, 6, 10, 0, 0, 0, DateTimeKind.Utc),
                             OpenedByUserId = 1,
+                            PaymentMethod = "Cash",
                             Status = 2,
                             TabCode = "TAB-002",
                             TableNumber = 12
@@ -92,6 +319,12 @@ namespace tab_it.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("LastRestockedAt")
                         .HasColumnType("datetime(6)");
@@ -123,6 +356,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 1,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Coffee Beans",
                             QuantityOnHand = 5.000m,
@@ -133,6 +367,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 2,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Milk",
                             QuantityOnHand = 12.000m,
@@ -143,6 +378,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 3,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Coca Cola 0.33L Can",
                             QuantityOnHand = 100.000m,
@@ -153,6 +389,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 4,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Fanta 0.33L Can",
                             QuantityOnHand = 80.000m,
@@ -163,6 +400,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 5,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Sprite 0.33L Can",
                             QuantityOnHand = 80.000m,
@@ -173,6 +411,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 6,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Still Water 0.5L Bottle",
                             QuantityOnHand = 90.000m,
@@ -183,6 +422,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 7,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Orange Juice",
                             QuantityOnHand = 10.000m,
@@ -193,6 +433,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 8,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Chocolate Cake Slice",
                             QuantityOnHand = 18.000m,
@@ -203,6 +444,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 9,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Tiramisu Slice",
                             QuantityOnHand = 16.000m,
@@ -213,6 +455,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 10,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Cheesecake Slice",
                             QuantityOnHand = 16.000m,
@@ -223,6 +466,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 11,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Apple Pie Slice",
                             QuantityOnHand = 14.000m,
@@ -233,6 +477,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 12,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Croissant",
                             QuantityOnHand = 24.000m,
@@ -243,6 +488,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 13,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Blueberry Muffin",
                             QuantityOnHand = 20.000m,
@@ -253,6 +499,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 14,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Brownie",
                             QuantityOnHand = 20.000m,
@@ -263,6 +510,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 15,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Burger Patty",
                             QuantityOnHand = 30.000m,
@@ -273,6 +521,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 16,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Burger Bun",
                             QuantityOnHand = 30.000m,
@@ -283,6 +532,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 17,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Pizza Dough",
                             QuantityOnHand = 25.000m,
@@ -293,6 +543,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 18,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Pepperoni",
                             QuantityOnHand = 3.000m,
@@ -303,6 +554,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 19,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Cheese",
                             QuantityOnHand = 5.000m,
@@ -313,6 +565,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 20,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Sandwich Bread",
                             QuantityOnHand = 60.000m,
@@ -323,6 +576,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 21,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Chicken",
                             QuantityOnHand = 6.000m,
@@ -333,6 +587,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 22,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Lettuce",
                             QuantityOnHand = 3.000m,
@@ -343,6 +598,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 23,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Caesar Dressing",
                             QuantityOnHand = 4.000m,
@@ -363,8 +619,14 @@ namespace tab_it.Migrations
                     b.Property<int>("CustomerTabId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<decimal>("DiscountPercent")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
@@ -395,6 +657,7 @@ namespace tab_it.Migrations
                             Id = 1,
                             CustomerTabId = 1,
                             DiscountPercent = 0m,
+                            IsDeleted = false,
                             OrderNumber = "ORD-001",
                             OrderedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 5,
@@ -406,6 +669,7 @@ namespace tab_it.Migrations
                             Id = 2,
                             CustomerTabId = 2,
                             DiscountPercent = 10m,
+                            IsDeleted = false,
                             OrderNumber = "ORD-002",
                             OrderedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 5,
@@ -421,6 +685,12 @@ namespace tab_it.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ItemNote")
                         .IsRequired()
@@ -454,6 +724,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 1,
+                            IsDeleted = false,
                             ItemNote = "No onions",
                             LineTotal = 12.99m,
                             OrderId = 1,
@@ -464,6 +735,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 2,
+                            IsDeleted = false,
                             ItemNote = "",
                             LineTotal = 2.50m,
                             OrderId = 1,
@@ -474,6 +746,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 3,
+                            IsDeleted = false,
                             ItemNote = "",
                             LineTotal = 15.50m,
                             OrderId = 2,
@@ -484,6 +757,7 @@ namespace tab_it.Migrations
                         new
                         {
                             Id = 4,
+                            IsDeleted = false,
                             ItemNote = "",
                             LineTotal = 3.00m,
                             OrderId = 2,
@@ -504,7 +778,13 @@ namespace tab_it.Migrations
                     b.Property<int>("AvailableQuantity")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<bool>("IsAlcoholic")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("LastRestockedAt")
@@ -538,6 +818,7 @@ namespace tab_it.Migrations
                             Id = 1,
                             AvailableQuantity = 100,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Coca Cola 0.33L",
                             ProductCategoryId = 1,
@@ -549,6 +830,7 @@ namespace tab_it.Migrations
                             Id = 2,
                             AvailableQuantity = 50,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Coffee with Milk",
                             ProductCategoryId = 1,
@@ -560,6 +842,7 @@ namespace tab_it.Migrations
                             Id = 3,
                             AvailableQuantity = 20,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Cheeseburger",
                             ProductCategoryId = 2,
@@ -571,6 +854,7 @@ namespace tab_it.Migrations
                             Id = 4,
                             AvailableQuantity = 15,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Pepperoni Pizza",
                             ProductCategoryId = 2,
@@ -582,6 +866,7 @@ namespace tab_it.Migrations
                             Id = 5,
                             AvailableQuantity = 10,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Chocolate Cake",
                             ProductCategoryId = 3,
@@ -593,6 +878,7 @@ namespace tab_it.Migrations
                             Id = 6,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Espresso",
                             ProductCategoryId = 1,
@@ -604,6 +890,7 @@ namespace tab_it.Migrations
                             Id = 7,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Cappuccino",
                             ProductCategoryId = 1,
@@ -615,6 +902,7 @@ namespace tab_it.Migrations
                             Id = 8,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Latte",
                             ProductCategoryId = 1,
@@ -626,6 +914,7 @@ namespace tab_it.Migrations
                             Id = 9,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Fanta 0.33L",
                             ProductCategoryId = 1,
@@ -637,6 +926,7 @@ namespace tab_it.Migrations
                             Id = 10,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Sprite 0.33L",
                             ProductCategoryId = 1,
@@ -648,6 +938,7 @@ namespace tab_it.Migrations
                             Id = 11,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Still Water 0.5L",
                             ProductCategoryId = 1,
@@ -659,6 +950,7 @@ namespace tab_it.Migrations
                             Id = 12,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Orange Juice",
                             ProductCategoryId = 1,
@@ -670,6 +962,7 @@ namespace tab_it.Migrations
                             Id = 13,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Tiramisu",
                             ProductCategoryId = 3,
@@ -681,6 +974,7 @@ namespace tab_it.Migrations
                             Id = 14,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Cheesecake",
                             ProductCategoryId = 3,
@@ -692,6 +986,7 @@ namespace tab_it.Migrations
                             Id = 15,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Apple Pie",
                             ProductCategoryId = 3,
@@ -703,6 +998,7 @@ namespace tab_it.Migrations
                             Id = 16,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Croissant",
                             ProductCategoryId = 3,
@@ -714,6 +1010,7 @@ namespace tab_it.Migrations
                             Id = 17,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Blueberry Muffin",
                             ProductCategoryId = 3,
@@ -725,6 +1022,7 @@ namespace tab_it.Migrations
                             Id = 18,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Club Sandwich",
                             ProductCategoryId = 2,
@@ -736,6 +1034,7 @@ namespace tab_it.Migrations
                             Id = 19,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Caesar Salad",
                             ProductCategoryId = 2,
@@ -747,6 +1046,7 @@ namespace tab_it.Migrations
                             Id = 20,
                             AvailableQuantity = 0,
                             IsAlcoholic = false,
+                            IsDeleted = false,
                             LastRestockedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Brownie",
                             ProductCategoryId = 3,
@@ -763,10 +1063,16 @@ namespace tab_it.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -782,20 +1088,73 @@ namespace tab_it.Migrations
                         {
                             Id = 1,
                             Description = "Drinks and refreshments",
+                            IsDeleted = false,
                             Name = "Beverages"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Hot meals and main dishes",
+                            IsDeleted = false,
                             Name = "Main Course"
                         },
                         new
                         {
                             Id = 3,
                             Description = "Sweet treats",
+                            IsDeleted = false,
                             Name = "Desserts"
                         });
+                });
+
+            modelBuilder.Entity("tab_it.Models.Domain.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RelativePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("tab_it.Models.Domain.ProductRecipeItem", b =>
@@ -806,8 +1165,14 @@ namespace tab_it.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("InventoryItemId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -828,6 +1193,7 @@ namespace tab_it.Migrations
                         {
                             Id = 1,
                             InventoryItemId = 3,
+                            IsDeleted = false,
                             ProductId = 1,
                             QuantityRequired = 1.000m
                         },
@@ -835,6 +1201,7 @@ namespace tab_it.Migrations
                         {
                             Id = 2,
                             InventoryItemId = 1,
+                            IsDeleted = false,
                             ProductId = 2,
                             QuantityRequired = 0.012m
                         },
@@ -842,6 +1209,7 @@ namespace tab_it.Migrations
                         {
                             Id = 3,
                             InventoryItemId = 2,
+                            IsDeleted = false,
                             ProductId = 2,
                             QuantityRequired = 0.100m
                         },
@@ -849,6 +1217,7 @@ namespace tab_it.Migrations
                         {
                             Id = 4,
                             InventoryItemId = 15,
+                            IsDeleted = false,
                             ProductId = 3,
                             QuantityRequired = 1.000m
                         },
@@ -856,6 +1225,7 @@ namespace tab_it.Migrations
                         {
                             Id = 5,
                             InventoryItemId = 16,
+                            IsDeleted = false,
                             ProductId = 3,
                             QuantityRequired = 1.000m
                         },
@@ -863,6 +1233,7 @@ namespace tab_it.Migrations
                         {
                             Id = 6,
                             InventoryItemId = 17,
+                            IsDeleted = false,
                             ProductId = 4,
                             QuantityRequired = 1.000m
                         },
@@ -870,6 +1241,7 @@ namespace tab_it.Migrations
                         {
                             Id = 7,
                             InventoryItemId = 18,
+                            IsDeleted = false,
                             ProductId = 4,
                             QuantityRequired = 0.050m
                         },
@@ -877,6 +1249,7 @@ namespace tab_it.Migrations
                         {
                             Id = 8,
                             InventoryItemId = 19,
+                            IsDeleted = false,
                             ProductId = 4,
                             QuantityRequired = 0.120m
                         },
@@ -884,6 +1257,7 @@ namespace tab_it.Migrations
                         {
                             Id = 9,
                             InventoryItemId = 8,
+                            IsDeleted = false,
                             ProductId = 5,
                             QuantityRequired = 1.000m
                         },
@@ -891,6 +1265,7 @@ namespace tab_it.Migrations
                         {
                             Id = 10,
                             InventoryItemId = 1,
+                            IsDeleted = false,
                             ProductId = 6,
                             QuantityRequired = 0.009m
                         },
@@ -898,6 +1273,7 @@ namespace tab_it.Migrations
                         {
                             Id = 11,
                             InventoryItemId = 1,
+                            IsDeleted = false,
                             ProductId = 7,
                             QuantityRequired = 0.012m
                         },
@@ -905,6 +1281,7 @@ namespace tab_it.Migrations
                         {
                             Id = 12,
                             InventoryItemId = 2,
+                            IsDeleted = false,
                             ProductId = 7,
                             QuantityRequired = 0.100m
                         },
@@ -912,6 +1289,7 @@ namespace tab_it.Migrations
                         {
                             Id = 13,
                             InventoryItemId = 1,
+                            IsDeleted = false,
                             ProductId = 8,
                             QuantityRequired = 0.012m
                         },
@@ -919,6 +1297,7 @@ namespace tab_it.Migrations
                         {
                             Id = 14,
                             InventoryItemId = 2,
+                            IsDeleted = false,
                             ProductId = 8,
                             QuantityRequired = 0.180m
                         },
@@ -926,6 +1305,7 @@ namespace tab_it.Migrations
                         {
                             Id = 15,
                             InventoryItemId = 4,
+                            IsDeleted = false,
                             ProductId = 9,
                             QuantityRequired = 1.000m
                         },
@@ -933,6 +1313,7 @@ namespace tab_it.Migrations
                         {
                             Id = 16,
                             InventoryItemId = 5,
+                            IsDeleted = false,
                             ProductId = 10,
                             QuantityRequired = 1.000m
                         },
@@ -940,6 +1321,7 @@ namespace tab_it.Migrations
                         {
                             Id = 17,
                             InventoryItemId = 6,
+                            IsDeleted = false,
                             ProductId = 11,
                             QuantityRequired = 1.000m
                         },
@@ -947,6 +1329,7 @@ namespace tab_it.Migrations
                         {
                             Id = 18,
                             InventoryItemId = 7,
+                            IsDeleted = false,
                             ProductId = 12,
                             QuantityRequired = 0.250m
                         },
@@ -954,6 +1337,7 @@ namespace tab_it.Migrations
                         {
                             Id = 19,
                             InventoryItemId = 9,
+                            IsDeleted = false,
                             ProductId = 13,
                             QuantityRequired = 1.000m
                         },
@@ -961,6 +1345,7 @@ namespace tab_it.Migrations
                         {
                             Id = 20,
                             InventoryItemId = 10,
+                            IsDeleted = false,
                             ProductId = 14,
                             QuantityRequired = 1.000m
                         },
@@ -968,6 +1353,7 @@ namespace tab_it.Migrations
                         {
                             Id = 21,
                             InventoryItemId = 11,
+                            IsDeleted = false,
                             ProductId = 15,
                             QuantityRequired = 1.000m
                         },
@@ -975,6 +1361,7 @@ namespace tab_it.Migrations
                         {
                             Id = 22,
                             InventoryItemId = 12,
+                            IsDeleted = false,
                             ProductId = 16,
                             QuantityRequired = 1.000m
                         },
@@ -982,6 +1369,7 @@ namespace tab_it.Migrations
                         {
                             Id = 23,
                             InventoryItemId = 13,
+                            IsDeleted = false,
                             ProductId = 17,
                             QuantityRequired = 1.000m
                         },
@@ -989,6 +1377,7 @@ namespace tab_it.Migrations
                         {
                             Id = 24,
                             InventoryItemId = 20,
+                            IsDeleted = false,
                             ProductId = 18,
                             QuantityRequired = 2.000m
                         },
@@ -996,6 +1385,7 @@ namespace tab_it.Migrations
                         {
                             Id = 25,
                             InventoryItemId = 21,
+                            IsDeleted = false,
                             ProductId = 18,
                             QuantityRequired = 0.120m
                         },
@@ -1003,6 +1393,7 @@ namespace tab_it.Migrations
                         {
                             Id = 26,
                             InventoryItemId = 22,
+                            IsDeleted = false,
                             ProductId = 18,
                             QuantityRequired = 0.030m
                         },
@@ -1010,6 +1401,7 @@ namespace tab_it.Migrations
                         {
                             Id = 27,
                             InventoryItemId = 21,
+                            IsDeleted = false,
                             ProductId = 19,
                             QuantityRequired = 0.120m
                         },
@@ -1017,6 +1409,7 @@ namespace tab_it.Migrations
                         {
                             Id = 28,
                             InventoryItemId = 22,
+                            IsDeleted = false,
                             ProductId = 19,
                             QuantityRequired = 0.120m
                         },
@@ -1024,6 +1417,7 @@ namespace tab_it.Migrations
                         {
                             Id = 29,
                             InventoryItemId = 23,
+                            IsDeleted = false,
                             ProductId = 19,
                             QuantityRequired = 0.030m
                         },
@@ -1031,6 +1425,7 @@ namespace tab_it.Migrations
                         {
                             Id = 30,
                             InventoryItemId = 14,
+                            IsDeleted = false,
                             ProductId = 20,
                             QuantityRequired = 1.000m
                         });
@@ -1044,10 +1439,16 @@ namespace tab_it.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1056,19 +1457,21 @@ namespace tab_it.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Description = "Administrator role",
+                            IsDeleted = false,
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Staff role",
+                            IsDeleted = false,
                             Name = "Staff"
                         });
                 });
@@ -1084,6 +1487,9 @@ namespace tab_it.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(120)
@@ -1095,6 +1501,9 @@ namespace tab_it.Migrations
                         .HasColumnType("varchar(80)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")
@@ -1119,7 +1528,7 @@ namespace tab_it.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -1129,11 +1538,63 @@ namespace tab_it.Migrations
                             Email = "admin@tab-it.local",
                             FirstName = "Admin",
                             IsActive = true,
+                            IsDeleted = false,
                             LastName = "User",
                             PasswordHash = "admin",
                             RoleId = 1,
                             Username = "admin"
                         });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("tab_it.Models.Domain.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("tab_it.Models.Domain.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("tab_it.Models.Domain.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("tab_it.Models.Domain.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("tab_it.Models.Domain.CustomerTab", b =>
@@ -1188,6 +1649,17 @@ namespace tab_it.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("tab_it.Models.Domain.ProductImage", b =>
+                {
+                    b.HasOne("tab_it.Models.Domain.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("tab_it.Models.Domain.ProductRecipeItem", b =>
                 {
                     b.HasOne("tab_it.Models.Domain.InventoryItem", "InventoryItem")
@@ -1235,6 +1707,8 @@ namespace tab_it.Migrations
 
             modelBuilder.Entity("tab_it.Models.Domain.Product", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("OrderItems");
 
                     b.Navigation("RecipeItems");

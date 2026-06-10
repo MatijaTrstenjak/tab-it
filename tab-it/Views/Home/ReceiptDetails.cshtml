@@ -1,0 +1,67 @@
+@model ReceiptDetailsViewModel
+
+<section class="app-panel receipt-details">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h1 class="m-0">Table @Model.TableNumber Receipt</h1>
+            <p class="app-panel-lead mb-0">Closed @(Model.ClosedAt?.ToString("dd MMM yyyy HH:mm") ?? "-")</p>
+        </div>
+        <strong>@Model.Total.ToString("C")</strong>
+    </div>
+
+    <form asp-action="UpdateReceiptPayment" asp-route-id="@Model.TabId" method="post" class="receipt-payment-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label for="paymentMethod" class="control-label">Payment method</label>
+            <select id="paymentMethod" name="paymentMethod" class="form-select">
+                @foreach (var option in Model.PaymentOptions)
+                {
+                    if (option == Model.PaymentMethod)
+                    {
+                        <option value="@option" selected>@option</option>
+                    }
+                    else
+                    {
+                        <option value="@option">@option</option>
+                    }
+                }
+            </select>
+            <span class="field-validation-error">@Html.ValidationMessage("paymentMethod")</span>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save Payment</button>
+            <a asp-action="DownloadReceipt" asp-route-id="@Model.TabId" class="btn btn-outline-secondary">PDF</a>
+        </div>
+    </form>
+
+    <div class="table-responsive mt-3">
+        <table class="table app-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td colspan="3">
+                            <strong>Order @order.OrderedAt.ToString("HH:mm")</strong>
+                            <span class="text-muted small ms-2">@order.Status</span>
+                        </td>
+                    </tr>
+                    @foreach (var item in order.Items)
+                    {
+                        <tr>
+                            <td>@(item.Product?.Name ?? $"Product {item.ProductId}")</td>
+                            <td>@item.Quantity</td>
+                            <td class="text-end">@item.LineTotal.ToString("C")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

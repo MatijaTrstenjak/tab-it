@@ -1,0 +1,67 @@
+@model tab_it.Models.ViewModels.ExternalRegisterViewModel
+
+@{
+    ViewData["Title"] = "Complete registration";
+    ViewData["HideShell"] = true;
+    ViewData["BodyClass"] = "coffee-landing-page";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+}
+
+<section class="ux-landing ux-auth-page">
+    <div class="cafe-background" aria-hidden="true">
+        <div class="pendant-light"></div>
+        <div class="pendant-light pendant-light-2"></div>
+        <div class="shelf">
+            <div class="deco-pot"></div>
+        </div>
+        <div class="shelf shelf-2">
+            <div class="deco-cup"></div>
+        </div>
+    </div>
+
+    <main class="ux-auth-shell ux-auth-shell-single" role="main">
+        <section class="ux-auth-panel">
+            <a class="ux-auth-back" asp-controller="Home" asp-action="Index">tab-it</a>
+            <p class="ux-kicker">Google Login</p>
+            <h1>Complete registration</h1>
+            <p class="ux-auth-copy">Add staff identity details before entering the workspace.</p>
+
+            <form asp-action="ExternalRegister" method="post" class="ux-auth-form">
+                <input asp-for="ReturnUrl" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="ux-validation"></div>
+
+                <div class="ux-field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" autocomplete="username" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+
+                <div class="ux-auth-grid">
+                    <div class="ux-field">
+                        <label asp-for="OIB"></label>
+                        <input asp-for="OIB" inputmode="numeric" />
+                        <span asp-validation-for="OIB"></span>
+                    </div>
+
+                    <div class="ux-field">
+                        <label asp-for="JMBG"></label>
+                        <input asp-for="JMBG" inputmode="numeric" />
+                        <span asp-validation-for="JMBG"></span>
+                    </div>
+                </div>
+
+                <div class="ux-auth-actions">
+                    <button type="submit" class="ux-btn ux-btn-primary">Create account</button>
+                    <a asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="ux-btn ux-btn-ghost">Back to login</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

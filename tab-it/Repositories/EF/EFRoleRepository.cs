@@ -15,35 +15,37 @@ public class EFRoleRepository : IRoleRepository
 
     public IReadOnlyList<Role> GetAll()
     {
-        return _context.Roles.ToList();
+        return _context.StaffRoles.ToList();
     }
 
     public Role? GetById(int id)
     {
-        return _context.Roles.Find(id);
+        return _context.StaffRoles.Find(id);
     }
 
     public void Add(Role role)
     {
-        _context.Roles.Add(role);
+        _context.StaffRoles.Add(role);
         _context.SaveChanges();
     }
 
     public void Update(Role role)
     {
-        _context.Roles.Update(role);
+        _context.StaffRoles.Update(role);
         _context.SaveChanges();
     }
 
     public void Delete(int id)
     {
-        var role = _context.Roles.Find(id);
+        var role = _context.StaffRoles.Find(id);
         if (role is null)
         {
             return;
         }
 
-        _context.Roles.Remove(role);
+        role.IsDeleted = true;
+        role.DeletedAt = DateTime.UtcNow;
+        _context.StaffRoles.Update(role);
         _context.SaveChanges();
     }
 }

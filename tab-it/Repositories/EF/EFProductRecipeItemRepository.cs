@@ -17,6 +17,8 @@ public class EFProductRecipeItemRepository : IProductRecipeItemRepository
     public IReadOnlyList<ProductRecipeItem> GetAll()
     {
         return _context.ProductRecipeItems
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(r => r.Product)
                 .ThenInclude(p => p!.Category)
             .Include(r => r.InventoryItem)
@@ -26,6 +28,7 @@ public class EFProductRecipeItemRepository : IProductRecipeItemRepository
     public IReadOnlyList<ProductRecipeItem> GetByProductId(int productId)
     {
         return _context.ProductRecipeItems
+            .AsNoTracking()
             .Include(r => r.InventoryItem)
             .Where(r => r.ProductId == productId)
             .ToList();
@@ -34,6 +37,8 @@ public class EFProductRecipeItemRepository : IProductRecipeItemRepository
     public ProductRecipeItem? GetById(int id)
     {
         return _context.ProductRecipeItems
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(r => r.Product)
                 .ThenInclude(p => p!.Category)
             .Include(r => r.InventoryItem)
@@ -60,7 +65,9 @@ public class EFProductRecipeItemRepository : IProductRecipeItemRepository
             return;
         }
 
-        _context.ProductRecipeItems.Remove(item);
+        item.IsDeleted = true;
+        item.DeletedAt = DateTime.UtcNow;
+        _context.ProductRecipeItems.Update(item);
         _context.SaveChanges();
     }
 }

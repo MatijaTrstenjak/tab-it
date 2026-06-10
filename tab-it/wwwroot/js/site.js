@@ -122,6 +122,63 @@ $(document).ready(function () {
         });
     }
 
+    function initImageDropzones(scope) {
+        var root = scope ? $(scope) : $(document);
+        root.find(".image-dropzone").each(function () {
+            var dropzone = this;
+            var $dropzone = $(dropzone);
+            if ($dropzone.data("image-dropzone-bound")) {
+                return;
+            }
+
+            $dropzone.data("image-dropzone-bound", true);
+            var input = dropzone.querySelector('input[type="file"]');
+            var preview = dropzone.querySelector("[data-image-preview]");
+
+            if (!input || !preview) {
+                return;
+            }
+
+            function showPreview(file) {
+                if (!file || !file.type || !file.type.startsWith("image/")) {
+                    return;
+                }
+
+                preview.src = URL.createObjectURL(file);
+                preview.alt = file.name;
+                preview.classList.remove("d-none");
+            }
+
+            input.addEventListener("change", function () {
+                showPreview(input.files[0]);
+            });
+
+            ["dragenter", "dragover"].forEach(function (eventName) {
+                dropzone.addEventListener(eventName, function (event) {
+                    event.preventDefault();
+                    dropzone.classList.add("dragging");
+                });
+            });
+
+            ["dragleave", "drop"].forEach(function (eventName) {
+                dropzone.addEventListener(eventName, function (event) {
+                    event.preventDefault();
+                    dropzone.classList.remove("dragging");
+                });
+            });
+
+            dropzone.addEventListener("drop", function (event) {
+                var file = event.dataTransfer.files[0];
+                if (!file) {
+                    return;
+                }
+
+                input.files = event.dataTransfer.files;
+                showPreview(file);
+            });
+        });
+    }
+
     function bindModalForm() {
         var $modalBody = $("#globalFormModalBody");
         var $modalForm = $modalBody.find("form");
@@ -138,6 +195,7 @@ $(document).ready(function () {
 
         initDatePickers($modalBody);
         initAutocomplete($modalBody);
+        initImageDropzones($modalBody);
 
         $modalForm.off("submit.modalForm").on("submit.modalForm", function (submitEvent) {
             submitEvent.preventDefault();
@@ -149,17 +207,31 @@ $(document).ready(function () {
             var $submit = $modalForm.find('[type="submit"]');
             $submit.prop("disabled", true);
 
-            $.ajax({
+            var isMultipart = (($modalForm.attr("enctype") || "").toLowerCase() === "multipart/form-data");
+            var ajaxOptions = {
                 url: $modalForm.attr("action") || window.location.href,
                 method: ($modalForm.attr("method") || "POST").toUpperCase(),
-                data: $modalForm.serialize(),
+                data: isMultipart ? new FormData($modalForm[0]) : $modalForm.serialize(),
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
                 }
-            })
+            };
+
+            if (isMultipart) {
+                ajaxOptions.processData = false;
+                ajaxOptions.contentType = false;
+            }
+
+            $.ajax(ajaxOptions)
                 .done(function (html) {
                     var $response = $("<div>").append($.parseHTML(html, document, true));
-                    var $returnedForm = $response.find("form").first();
+                    var $returnedForm = $response.find("main form").first();
+                    if (!$returnedForm.length) {
+                        $returnedForm = $response.find(".app-main-content form").first();
+                    }
+                    if (!$returnedForm.length) {
+                        $returnedForm = $response.find("form").not('[action*="Logout"]').first();
+                    }
 
                     if ($returnedForm.length) {
                         $modalBody.html($returnedForm);
@@ -172,7 +244,13 @@ $(document).ready(function () {
                 })
                 .fail(function (xhr) {
                     var $response = $("<div>").append($.parseHTML(xhr.responseText || "", document, true));
-                    var $returnedForm = $response.find("form").first();
+                    var $returnedForm = $response.find("main form").first();
+                    if (!$returnedForm.length) {
+                        $returnedForm = $response.find(".app-main-content form").first();
+                    }
+                    if (!$returnedForm.length) {
+                        $returnedForm = $response.find("form").not('[action*="Logout"]').first();
+                    }
 
                     if ($returnedForm.length) {
                         $modalBody.html($returnedForm);
@@ -279,10 +357,18 @@ $(document).ready(function () {
         $.get(url)
             .done(function (response) {
                 var $response = $("<div>").append($.parseHTML(response, document, true));
-                var $content = $response.find("form").first();
+                var $content = $response.find(".app-panel").first();
 
                 if (!$content.length) {
-                    $content = $response.find(".app-panel").first();
+                    $content = $response.find("main form").first();
+                }
+
+                if (!$content.length) {
+                    $content = $response.find(".app-main-content form").first();
+                }
+
+                if (!$content.length) {
+                    $content = $response.find("form").not('[action*="Logout"]').first();
                 }
 
                 if (!$content.length) {
@@ -393,4 +479,5 @@ $(document).ready(function () {
 
     initDatePickers();
     initAutocomplete();
+    initImageDropzones();
 });

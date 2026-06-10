@@ -1,11 +1,11 @@
-@model tab_it.Models.Domain.Role
+@model tab_it.Models.ViewModels.IdentityRoleEditViewModel
 
 <h1>Edit Role</h1>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="Id" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -15,14 +15,8 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary">Save</button>
                 <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
             </div>
         </form>
@@ -30,5 +24,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

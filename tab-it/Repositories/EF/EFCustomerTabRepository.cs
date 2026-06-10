@@ -17,6 +17,8 @@ public class EFCustomerTabRepository : ICustomerTabRepository
     public IReadOnlyList<CustomerTab> GetAll()
     {
         return _context.CustomerTabs
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(t => t.OpenedByUser)
             .Include(t => t.Orders)
                 .ThenInclude(o => o.Items)
@@ -26,12 +28,16 @@ public class EFCustomerTabRepository : ICustomerTabRepository
 
     public IReadOnlyList<CustomerTab> GetAllBasic()
     {
-        return _context.CustomerTabs.ToList();
+        return _context.CustomerTabs
+            .AsNoTracking()
+            .ToList();
     }
 
     public IReadOnlyList<CustomerTab> GetAllForPos()
     {
         return _context.CustomerTabs
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(t => t.Orders)
             .ToList();
     }
@@ -39,6 +45,8 @@ public class EFCustomerTabRepository : ICustomerTabRepository
     public CustomerTab? GetById(int id)
     {
         return _context.CustomerTabs
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(t => t.OpenedByUser)
             .Include(t => t.Orders)
                 .ThenInclude(o => o.Items)
@@ -66,7 +74,9 @@ public class EFCustomerTabRepository : ICustomerTabRepository
             return;
         }
 
-        _context.CustomerTabs.Remove(tab);
+        tab.IsDeleted = true;
+        tab.DeletedAt = DateTime.UtcNow;
+        _context.CustomerTabs.Update(tab);
         _context.SaveChanges();
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tab_it.Models.Domain;
 
-public class CustomerTab
+public class CustomerTab : ISoftDeletable
 {
     [Key]
     public int Id { get; set; }
@@ -20,6 +20,10 @@ public class CustomerTab
     public TabStatus Status { get; set; }
     [StringLength(500)]
     public string Notes { get; set; } = string.Empty;
+    [StringLength(40)]
+    public string PaymentMethod { get; set; } = string.Empty;
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     [ForeignKey("OpenedByUser")]
     [Range(1, int.MaxValue)]

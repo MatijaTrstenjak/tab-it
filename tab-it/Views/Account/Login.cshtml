@@ -1,0 +1,106 @@
+@model tab_it.Models.ViewModels.LoginViewModel
+@using Microsoft.AspNetCore.Authentication
+@inject Microsoft.AspNetCore.Identity.SignInManager<tab_it.Models.Domain.AppUser> SignInManager
+
+@{
+    ViewData["Title"] = "Login";
+    ViewData["HideShell"] = true;
+    ViewData["BodyClass"] = "coffee-landing-page";
+    var externalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+}
+
+<section class="ux-landing ux-auth-page">
+    <div class="cafe-background" aria-hidden="true">
+        <div class="pendant-light"></div>
+        <div class="pendant-light pendant-light-2"></div>
+        <div class="shelf">
+            <div class="deco-pot"></div>
+        </div>
+        <div class="shelf shelf-2">
+            <div class="deco-cup"></div>
+        </div>
+    </div>
+
+    <main class="ux-auth-shell" role="main">
+        <section class="ux-auth-scene" aria-hidden="true">
+            <div class="auth-clock">
+                <span></span>
+            </div>
+            <div class="coffee-machine auth-machine">
+                <div class="machine-top">
+                    <div class="machine-light machine-light-status"></div>
+                    <div class="machine-screen"></div>
+                    <div class="machine-light machine-light-ready"></div>
+                </div>
+                <div class="group-head"></div>
+                <div class="portafilter">
+                    <div class="portafilter-handle"></div>
+                </div>
+                <div class="coffee-stream"></div>
+                <div class="steam-container">
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                </div>
+                <div class="cup">
+                    <div class="liquid"></div>
+                </div>
+                <div class="cup-holder"></div>
+            </div>
+            <div class="auth-counter"></div>
+        </section>
+
+        <section class="ux-auth-panel">
+            <a class="ux-auth-back" asp-controller="Home" asp-action="Index">tab-it</a>
+            <p class="ux-kicker">Store Operations</p>
+            <h1>Login into app</h1>
+            <p class="ux-auth-copy">Start a shift, check tables, and keep the service floor moving.</p>
+
+            <form asp-action="Login" method="post" class="ux-auth-form">
+                <input asp-for="ReturnUrl" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="ux-validation"></div>
+
+                <div class="ux-field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" autocomplete="username" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+
+                <div class="ux-field">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" autocomplete="current-password" />
+                    <span asp-validation-for="Password"></span>
+                </div>
+
+                <label class="ux-check">
+                    <input asp-for="RememberMe" />
+                    <span>@Html.DisplayNameFor(m => m.RememberMe)</span>
+                </label>
+
+                <div class="ux-auth-actions">
+                    <button type="submit" class="ux-btn ux-btn-primary">Login</button>
+                    <a asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl" class="ux-btn ux-btn-ghost">Create account</a>
+                </div>
+            </form>
+
+            @if (externalLogins.Count > 0)
+            {
+                <form asp-action="ExternalLogin" method="post" class="ux-external-form">
+                    <input name="returnUrl" type="hidden" value="@Model.ReturnUrl" />
+                    @foreach (var provider in externalLogins)
+                    {
+                        <button type="submit" name="provider" value="@provider.Name" class="ux-btn ux-btn-ghost">@provider.DisplayName</button>
+                    }
+                </form>
+            }
+        </section>
+    </main>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

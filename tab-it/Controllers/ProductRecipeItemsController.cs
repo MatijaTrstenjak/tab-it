@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using tab_it.Models.Domain;
@@ -5,6 +6,7 @@ using tab_it.Repositories.Contracts;
 
 namespace tab_it.Controllers;
 
+[Authorize(Roles = "Admin,Manager")]
 public class ProductRecipeItemsController : Controller
 {
     private readonly IProductRecipeItemRepository _recipeRepository;

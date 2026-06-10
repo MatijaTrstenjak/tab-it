@@ -1,0 +1,28 @@
+@model tab_it.Models.Domain.Product
+
+@{
+    var currentImage = Model?.Images
+        .Where(i => !i.IsDeleted)
+        .OrderByDescending(i => i.CreatedAt)
+        .FirstOrDefault();
+}
+
+<div class="form-group mb-3">
+    <label class="control-label" for="ImageFile">Menu item image</label>
+    <label class="image-dropzone" for="ImageFile">
+        @if (currentImage is not null)
+        {
+            <img class="image-dropzone-preview" src="@currentImage.RelativePath" alt="@((Model?.Name ?? "Menu item")) image" data-image-preview />
+        }
+        else
+        {
+            <img class="image-dropzone-preview d-none" alt="" data-image-preview />
+        }
+        <span class="image-dropzone-copy">
+            <strong>Drop image here</strong>
+            <span>or browse your computer</span>
+        </span>
+        <input id="ImageFile" name="ImageFile" type="file" accept="image/*" class="image-dropzone-input" />
+    </label>
+    <span class="text-danger field-validation-valid" data-valmsg-for="ImageFile" data-valmsg-replace="true"></span>
+</div>

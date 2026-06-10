@@ -17,6 +17,8 @@ public class EFInventoryItemRepository : IInventoryItemRepository
     public IReadOnlyList<InventoryItem> GetAll()
     {
         return _context.InventoryItems
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(i => i.RecipeItems)
                 .ThenInclude(r => r.Product)
             .ToList();
@@ -25,6 +27,8 @@ public class EFInventoryItemRepository : IInventoryItemRepository
     public InventoryItem? GetById(int id)
     {
         return _context.InventoryItems
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(i => i.RecipeItems)
                 .ThenInclude(r => r.Product)
             .FirstOrDefault(i => i.Id == id);
@@ -50,7 +54,9 @@ public class EFInventoryItemRepository : IInventoryItemRepository
             return;
         }
 
-        _context.InventoryItems.Remove(item);
+        item.IsDeleted = true;
+        item.DeletedAt = DateTime.UtcNow;
+        _context.InventoryItems.Update(item);
         _context.SaveChanges();
     }
 }

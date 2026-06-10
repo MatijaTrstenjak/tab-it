@@ -17,6 +17,7 @@ public class EFOrderItemRepository : IOrderItemRepository
     public IReadOnlyList<OrderItem> GetAll()
     {
         return _context.OrderItems
+            .AsNoTracking()
             .Include(i => i.Order)
             .Include(i => i.Product)
             .ToList();
@@ -25,6 +26,7 @@ public class EFOrderItemRepository : IOrderItemRepository
     public OrderItem? GetById(int id)
     {
         return _context.OrderItems
+            .AsNoTracking()
             .Include(i => i.Order)
             .Include(i => i.Product)
             .FirstOrDefault(i => i.Id == id);
@@ -50,7 +52,9 @@ public class EFOrderItemRepository : IOrderItemRepository
             return;
         }
 
-        _context.OrderItems.Remove(orderItem);
+        orderItem.IsDeleted = true;
+        orderItem.DeletedAt = DateTime.UtcNow;
+        _context.OrderItems.Update(orderItem);
         _context.SaveChanges();
     }
 }

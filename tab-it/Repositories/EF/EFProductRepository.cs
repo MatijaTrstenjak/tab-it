@@ -17,7 +17,10 @@ public class EFProductRepository : IProductRepository
     public IReadOnlyList<Product> GetAll()
     {
         return _context.Products
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(p => p.Category)
+            .Include(p => p.Images)
             .Include(p => p.RecipeItems)
                 .ThenInclude(r => r.InventoryItem)
             .ToList();
@@ -26,7 +29,10 @@ public class EFProductRepository : IProductRepository
     public Product? GetById(int id)
     {
         return _context.Products
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(p => p.Category)
+            .Include(p => p.Images)
             .Include(p => p.RecipeItems)
                 .ThenInclude(r => r.InventoryItem)
             .FirstOrDefault(p => p.Id == id);
@@ -52,7 +58,9 @@ public class EFProductRepository : IProductRepository
             return;
         }
 
-        _context.Products.Remove(product);
+        product.IsDeleted = true;
+        product.DeletedAt = DateTime.UtcNow;
+        _context.Products.Update(product);
         _context.SaveChanges();
     }
 }

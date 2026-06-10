@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using tab_it.DAL;
 using tab_it.Models.Domain;
 using tab_it.Repositories.Contracts;
@@ -15,12 +16,16 @@ public class EFProductCategoryRepository : IProductCategoryRepository
 
     public IReadOnlyList<ProductCategory> GetAll()
     {
-        return _context.ProductCategories.ToList();
+        return _context.ProductCategories
+            .AsNoTracking()
+            .ToList();
     }
 
     public ProductCategory? GetById(int id)
     {
-        return _context.ProductCategories.Find(id);
+        return _context.ProductCategories
+            .AsNoTracking()
+            .FirstOrDefault(c => c.Id == id);
     }
 
     public void Add(ProductCategory category)
@@ -43,7 +48,9 @@ public class EFProductCategoryRepository : IProductCategoryRepository
             return;
         }
 
-        _context.ProductCategories.Remove(category);
+        category.IsDeleted = true;
+        category.DeletedAt = DateTime.UtcNow;
+        _context.ProductCategories.Update(category);
         _context.SaveChanges();
     }
 }

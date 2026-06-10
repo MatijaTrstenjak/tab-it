@@ -1,0 +1,108 @@
+@model tab_it.Models.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+    ViewData["HideShell"] = true;
+    ViewData["BodyClass"] = "coffee-landing-page";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+}
+
+<section class="ux-landing ux-auth-page">
+    <div class="cafe-background" aria-hidden="true">
+        <div class="pendant-light"></div>
+        <div class="pendant-light pendant-light-2"></div>
+        <div class="shelf">
+            <div class="deco-pot"></div>
+        </div>
+        <div class="shelf shelf-2">
+            <div class="deco-cup"></div>
+        </div>
+    </div>
+
+    <main class="ux-auth-shell ux-auth-shell-register" role="main">
+        <section class="ux-auth-panel">
+            <a class="ux-auth-back" asp-controller="Home" asp-action="Index">tab-it</a>
+            <p class="ux-kicker">New Staff Access</p>
+            <h1>Create account</h1>
+            <p class="ux-auth-copy">Set up your staff login for POS, tables, recipes, and accounting.</p>
+
+            <form asp-action="Register" method="post" class="ux-auth-form">
+                <input asp-for="ReturnUrl" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="ux-validation"></div>
+
+                <div class="ux-field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" autocomplete="username" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+
+                <div class="ux-auth-grid">
+                    <div class="ux-field">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" autocomplete="new-password" />
+                        <span asp-validation-for="Password"></span>
+                    </div>
+
+                    <div class="ux-field">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmPassword"></span>
+                    </div>
+                </div>
+
+                <div class="ux-auth-grid">
+                    <div class="ux-field">
+                        <label asp-for="OIB"></label>
+                        <input asp-for="OIB" inputmode="numeric" />
+                        <span asp-validation-for="OIB"></span>
+                    </div>
+
+                    <div class="ux-field">
+                        <label asp-for="JMBG"></label>
+                        <input asp-for="JMBG" inputmode="numeric" />
+                        <span asp-validation-for="JMBG"></span>
+                    </div>
+                </div>
+
+                <div class="ux-auth-actions">
+                    <button type="submit" class="ux-btn ux-btn-primary">Register</button>
+                    <a asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="ux-btn ux-btn-ghost">Login</a>
+                </div>
+            </form>
+        </section>
+
+        <section class="ux-auth-scene ux-auth-scene-compact" aria-hidden="true">
+            <div class="auth-ticket auth-ticket-one"></div>
+            <div class="auth-ticket auth-ticket-two"></div>
+            <div class="coffee-machine auth-machine">
+                <div class="machine-top">
+                    <div class="machine-light machine-light-status"></div>
+                    <div class="machine-screen"></div>
+                    <div class="machine-light machine-light-ready"></div>
+                </div>
+                <div class="group-head"></div>
+                <div class="portafilter">
+                    <div class="portafilter-handle"></div>
+                </div>
+                <div class="coffee-stream"></div>
+                <div class="steam-container">
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                </div>
+                <div class="cup">
+                    <div class="liquid"></div>
+                </div>
+                <div class="cup-holder"></div>
+            </div>
+            <div class="auth-counter"></div>
+        </section>
+    </main>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

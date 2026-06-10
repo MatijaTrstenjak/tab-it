@@ -1,0 +1,191 @@
+@model AccountingViewModel
+@using System.Globalization
+@using System.Net
+
+@section Breadcrumbs {
+    <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Accounting</li></ol></nav>
+}
+
+@functions {
+    private static string ChartColor(int index)
+    {
+        var colors = new[] { "#195349", "#ffb424", "#6f7d51", "#b86b35", "#2f6f9f" };
+        return colors[index % colors.Length];
+    }
+
+    private static string SvgNumber(decimal value)
+    {
+        return value.ToString("0.###", CultureInfo.InvariantCulture);
+    }
+
+    private static string SvgText(decimal x, decimal y, string cssClass, string value)
+    {
+        return $"<text x=\"{SvgNumber(x)}\" y=\"{SvgNumber(y)}\" text-anchor=\"middle\" class=\"{cssClass}\">{WebUtility.HtmlEncode(value)}</text>";
+    }
+}
+
+@{
+    var paymentTotal = Model.PaymentBreakdown.Sum(p => p.Total);
+    var donutRadius = 42m;
+    var donutCircumference = 2m * (decimal)Math.PI * donutRadius;
+    var donutOffset = 0m;
+    var maxDailySales = Math.Max(Model.LastSevenDays.Any() ? Model.LastSevenDays.Max(d => d.Total) : 0m, 1m);
+    var chartWidth = 640m;
+    var chartHeight = 220m;
+    var plotLeft = 44m;
+    var plotTop = 18m;
+    var plotWidth = 568m;
+    var plotHeight = 150m;
+    var slotWidth = plotWidth / Math.Max(Model.LastSevenDays.Count, 1);
+    var barWidth = Math.Min(42m, slotWidth * 0.55m);
+}
+
+<section class="app-panel accounting-page">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h1 class="m-0">Accounting</h1>
+            <p class="app-panel-lead">Daily sales, payment split, and receipt history.</p>
+        </div>
+        <div class="accounting-summary">
+            <span>Today</span>
+            <strong>@Model.TodaySales.ToString("C")</strong>
+        </div>
+    </div>
+
+    <div class="accounting-kpis">
+        <div>
+            <span>Receipts today</span>
+            <strong>@Model.TodayReceipts</strong>
+        </div>
+        <div>
+            <span>Last 7 days</span>
+            <strong>@Model.SevenDaySales.ToString("C")</strong>
+        </div>
+        <div>
+            <span>Average receipt</span>
+            <strong>@((Model.TodayReceipts == 0 ? 0 : Model.TodaySales / Model.TodayReceipts).ToString("C"))</strong>
+        </div>
+    </div>
+
+    <div class="accounting-chart-grid">
+        <section class="accounting-chart-panel">
+            <div class="accounting-chart-heading">
+                <h2>Today's Payment Split</h2>
+                <span>@Model.Today.ToString("dd MMM yyyy")</span>
+            </div>
+            <svg class="accounting-svg accounting-donut" viewBox="0 0 160 132" role="img" aria-label="Today's payment split">
+                <circle cx="80" cy="58" r="@SvgNumber(donutRadius)" fill="none" stroke="#f0eee7" stroke-width="20" />
+                @if (paymentTotal > 0)
+                {
+                    var segmentIndex = 0;
+                    foreach (var item in Model.PaymentBreakdown)
+                    {
+                        var segment = item.Total / paymentTotal * donutCircumference;
+                        <circle cx="80"
+                                cy="58"
+                                r="@SvgNumber(donutRadius)"
+                                fill="none"
+                                stroke="@ChartColor(segmentIndex)"
+                                stroke-width="20"
+                                stroke-dasharray="@SvgNumber(segment) @SvgNumber(donutCircumference)"
+                                stroke-dashoffset="@SvgNumber(-donutOffset)"
+                                transform="rotate(-90 80 58)" />
+                        donutOffset += segment;
+                        segmentIndex++;
+                    }
+                    @Html.Raw(SvgText(80m, 54m, "chart-total-label", paymentTotal.ToString("0.00")))
+                    @Html.Raw(SvgText(80m, 70m, "chart-muted-label", "EUR"))
+                }
+                else
+                {
+                    @Html.Raw(SvgText(80m, 62m, "chart-muted-label", "No sales today"))
+                }
+            </svg>
+            <div class="accounting-legend">
+                @{
+                    var legendIndex = 0;
+                }
+                @foreach (var item in Model.PaymentBreakdown)
+                {
+                    <span><i style="background:@ChartColor(legendIndex)"></i>@item.PaymentMethod: @item.Total.ToString("C")</span>
+                    legendIndex++;
+                }
+                @if (!Model.PaymentBreakdown.Any())
+                {
+                    <span>No closed receipts today.</span>
+                }
+            </div>
+        </section>
+
+        <section class="accounting-chart-panel">
+            <div class="accounting-chart-heading">
+                <h2>Daily Sales</h2>
+                <span>Last 7 days</span>
+            </div>
+            <svg class="accounting-svg accounting-bars" viewBox="0 0 @SvgNumber(chartWidth) @SvgNumber(chartHeight)" role="img" aria-label="Daily sales in last 7 days">
+                <line x1="@SvgNumber(plotLeft)" y1="@SvgNumber(plotTop)" x2="@SvgNumber(plotLeft)" y2="@SvgNumber(plotTop + plotHeight)" class="chart-axis" />
+                <line x1="@SvgNumber(plotLeft)" y1="@SvgNumber(plotTop + plotHeight)" x2="@SvgNumber(plotLeft + plotWidth)" y2="@SvgNumber(plotTop + plotHeight)" class="chart-axis" />
+                @for (var index = 0; index < Model.LastSevenDays.Count; index++)
+                {
+                    var day = Model.LastSevenDays[index];
+                    var barHeight = day.Total / maxDailySales * plotHeight;
+                    var x = plotLeft + index * slotWidth + (slotWidth - barWidth) / 2m;
+                    var y = plotTop + plotHeight - barHeight;
+                    <rect x="@SvgNumber(x)"
+                          y="@SvgNumber(y)"
+                          width="@SvgNumber(barWidth)"
+                          height="@SvgNumber(barHeight)"
+                          rx="6"
+                          class="chart-bar" />
+                    @Html.Raw(SvgText(x + barWidth / 2m, plotTop + plotHeight + 24m, "chart-muted-label", day.Date.ToString("ddd")))
+                    @Html.Raw(SvgText(x + barWidth / 2m, plotTop + plotHeight + 40m, "chart-muted-label", day.Date.ToString("dd")))
+                }
+            </svg>
+        </section>
+    </div>
+
+    <div class="mt-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h2 class="section-heading">Receipt History</h2>
+                <p class="app-panel-lead mb-0">Closed tables, payment methods, and receipt totals.</p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table app-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Receipt</th>
+                        <th>Closed</th>
+                        <th>Payment</th>
+                        <th>Orders</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var receipt in Model.Receipts)
+                    {
+                        var detailsUrl = Url.Action("ReceiptDetails", new { id = receipt.TabId }) ?? "#";
+                        <tr class="clickable-table-row ajax-row-link" data-href="@detailsUrl" data-title="Table @receipt.TableNumber">
+                            <td>
+                                <strong>Table @receipt.TableNumber</strong>
+                                <div class="text-muted small">Receipt #@receipt.TabId</div>
+                            </td>
+                            <td>@(receipt.ClosedAt?.ToString("dd MMM yyyy HH:mm") ?? "-")</td>
+                            <td>@receipt.PaymentMethod</td>
+                            <td>@receipt.OrderCount</td>
+                            <td class="text-end">@receipt.Total.ToString("C")</td>
+                        </tr>
+                    }
+                    @if (!Model.Receipts.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No closed receipts yet.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

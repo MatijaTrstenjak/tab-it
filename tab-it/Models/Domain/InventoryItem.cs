@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace tab_it.Models.Domain;
 
-public class InventoryItem
+public class InventoryItem : ISoftDeletable
 {
     [Key]
     public int Id { get; set; }
@@ -24,6 +24,8 @@ public class InventoryItem
     public decimal ReorderLevel { get; set; }
 
     public DateTime LastRestockedAt { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     public virtual ICollection<ProductRecipeItem> RecipeItems { get; set; } = new List<ProductRecipeItem>();
 }

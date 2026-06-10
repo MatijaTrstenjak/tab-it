@@ -7,20 +7,22 @@
 
 <style>
     :root {
-        --pos-bg: #f3f0e8;
-        --pos-soft: #f8f6f0;
+        --pos-bg: #edf1eb;
+        --pos-soft: #f7f7f3;
         --pos-card: #FFFFFF;
         --pos-border: rgba(0, 0, 0, 0.08);
-        --pos-accent: #FBB117;
-        --pos-accent-strong: #df9800;
-        --pos-secondary: #245C50;
-        --pos-secondary-soft: #e6f1ee;
-        --pos-text: #1C1C1C;
-        --pos-muted: #62605a;
-        --pos-radius: 16px;
+        --pos-accent: #ffb424;
+        --pos-accent-strong: #e19800;
+        --pos-accent-soft: #fef6e3;
+        --pos-secondary: #195349;
+        --pos-secondary-soft: #eaf2ef;
+        --pos-text: #1a1a1a;
+        --pos-muted: #595959;
+        --pos-radius: 12px;
+        --pos-radius-sm: 9px;
         --pos-pill: 9999px;
-        --pos-shadow: 0 10px 34px rgba(0, 0, 0, 0.08);
-        --pos-shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.05);
+        --pos-shadow: 0 14px 44px rgba(0, 0, 0, 0.08);
+        --pos-shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.045);
     }
 
     body.pos-mode {
@@ -55,12 +57,28 @@
         overflow: hidden;
         box-sizing: border-box;
     }
+
+    .category-btn:focus-visible,
+    .product-card:focus-visible,
+    .btn-checkout:focus-visible,
+    .pos-tab-current:focus-visible,
+    .pos-tab-btn:focus-visible,
+    .pos-tab-panel-close:focus-visible,
+    .pos-open-tab-btn:focus-visible,
+    .pos-tab-close:focus-visible,
+    .pos-payment-method:focus-visible,
+    .pos-new-tab button:focus-visible,
+    .pos-new-tab input:focus-visible {
+        outline: 3px solid rgba(255, 180, 36, 0.35);
+        outline-offset: 2px;
+    }
     
     .pos-panel-title {
-        font-weight: 700;
-        font-size: 1.25rem;
+        color: var(--pos-secondary);
+        font-weight: 900;
+        font-size: 1.05rem;
         margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
+        padding-bottom: 0.65rem;
         border-bottom: 1px solid var(--pos-border);
     }
 
@@ -73,30 +91,32 @@
     }
     
     .category-btn {
-        background: var(--pos-bg);
+        background: var(--pos-soft);
         border: 0;
-        border-radius: var(--pos-pill);
-        padding: 0.75rem 1rem;
-        font-weight: bold;
+        border-radius: var(--pos-radius-sm);
+        padding: 0.78rem 0.9rem;
+        color: var(--pos-text);
+        font-weight: 800;
         cursor: pointer;
         text-align: left;
-        transition: all 0.2s ease;
+        box-shadow: inset 0 0 0 1px var(--pos-border);
+        transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
     }
     .category-btn:hover {
-        background: var(--pos-accent);
-        color: #fff;
+        background: var(--pos-accent-soft);
+        color: var(--pos-accent-strong);
     }
     .category-btn.active {
-        background: var(--pos-accent);
-        color: var(--pos-text);
-        box-shadow: var(--pos-shadow-soft);
+        background: var(--pos-secondary);
+        color: #ffffff;
+        box-shadow: none;
     }
 
     /* Middle: Products */
     .pos-products {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 1rem;
+        gap: 0.85rem;
         overflow-y: auto;
         align-content: start;
         padding-bottom: 1rem;
@@ -105,21 +125,23 @@
     .product-card {
         background: var(--pos-card);
         border: 0;
-        border-radius: var(--pos-radius);
-        padding: 1rem;
-        text-align: center;
+        border-radius: var(--pos-radius-sm);
+        padding: 0.65rem;
+        text-align: left;
         cursor: pointer;
-        transition: transform 0.1s ease, box-shadow 0.1s;
+        transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-height: 120px;
+        min-height: 184px;
         user-select: none;
         box-shadow: inset 0 0 0 1px var(--pos-border);
+        overflow: hidden;
     }
     .product-card:hover {
         transform: translateY(-2px);
-        box-shadow: var(--pos-shadow-soft);
+        background: #fbfbf8;
+        box-shadow: inset 0 0 0 1px rgba(25, 83, 73, 0.18), var(--pos-shadow-soft);
     }
     .product-card:active {
         transform: translateY(1px);
@@ -135,14 +157,37 @@
         box-shadow: inset 0 0 0 1px var(--pos-border);
     }
     .product-name {
-        font-weight: 600;
-        font-size: 1.1rem;
+        font-weight: 850;
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+    .product-image {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        object-fit: cover;
+        background: var(--pos-secondary-soft);
+        margin-bottom: 0.65rem;
+        display: block;
+    }
+    .product-image-placeholder {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: var(--pos-secondary-soft);
+        color: var(--pos-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.65rem;
+        font-weight: 900;
+        font-size: 1.6rem;
     }
     .product-price {
         font-weight: 800;
-        color: var(--pos-accent);
+        color: var(--pos-secondary);
         margin-top: 0.75rem;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     /* Right: Receipt */
@@ -155,8 +200,8 @@
         flex: 1;
         overflow-y: auto;
         border: 0;
-        border-radius: var(--pos-radius);
-        padding: 0.5rem;
+        border-radius: var(--pos-radius-sm);
+        padding: 0.6rem;
         background: var(--pos-soft);
         margin-bottom: 1rem;
     }
@@ -171,26 +216,27 @@
         border-bottom: none;
     }
     .item-qty {
-        font-weight: bold;
+        font-weight: 800;
         margin-right: 0.5rem;
         background: var(--pos-secondary);
         color: #ffffff;
         padding: 2px 8px;
-        border-radius: 12px;
+        border-radius: 8px;
         font-size: 0.9em;
     }
     .item-name {
         flex: 1;
-        font-weight: 600;
+        font-weight: 800;
     }
     .item-total {
-        font-weight: bold;
+        font-weight: 800;
         margin-left: 0.5rem;
     }
 
     .receipt-total {
-        font-size: 1.5rem;
-        font-weight: 800;
+        color: var(--pos-secondary);
+        font-size: 1.35rem;
+        font-weight: 900;
         display: flex;
         justify-content: space-between;
         margin-bottom: 1rem;
@@ -202,22 +248,68 @@
         background: var(--pos-accent);
         color: var(--pos-text);
         border: 0;
-        border-radius: var(--pos-pill);
-        padding: 1.25rem;
+        border-radius: var(--pos-radius);
+        padding: 1.05rem;
         font-weight: 900;
-        font-size: 1.25rem;
+        font-size: 1.05rem;
         cursor: pointer;
         text-transform: uppercase;
-        box-shadow: var(--pos-shadow-soft);
-        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        box-shadow: none;
+        transition: transform 0.12s ease, background 0.12s ease;
         margin-top: auto;
     }
     .btn-checkout:active {
-        transform: translateY(4px);
+        transform: translateY(1px);
         box-shadow: none;
     }
     .btn-checkout:hover {
-        filter: brightness(1.05);
+        background: var(--pos-accent-strong);
+    }
+
+    .btn-checkout.is-sending {
+        pointer-events: none;
+        animation: posSendFly 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .btn-checkout.is-busy {
+        pointer-events: none;
+        filter: saturate(0.8);
+    }
+
+    .pos-send-feedback {
+        min-height: 1.35rem;
+        margin-top: 0.75rem;
+        color: var(--pos-muted);
+        font-size: 0.92rem;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .pos-send-feedback.error {
+        color: #9b2c2c;
+    }
+
+    .pos-send-feedback.success {
+        color: var(--pos-secondary);
+    }
+
+    @@keyframes posSendFly {
+        0% {
+            transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+            opacity: 1;
+        }
+        18% {
+            transform: translateX(-10px) translateY(-2px) rotate(-1deg) scale(1.02);
+            opacity: 1;
+        }
+        70% {
+            transform: translateX(88vw) translateY(-12px) rotate(5deg) scale(0.98);
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(120vw) translateY(-18px) rotate(7deg) scale(0.92);
+            opacity: 0;
+        }
     }
 
     /* Header Nav in POS */
@@ -239,15 +331,16 @@
         gap: 0.5rem;
     }
     .pos-nav-exit {
-        font-weight: bold;
+        font-weight: 800;
         color: var(--pos-text);
         text-decoration: none;
         border: 0;
         padding: 0.25rem 0.75rem;
-        border-radius: var(--pos-pill);
+        border-radius: var(--pos-radius-sm);
         transition: background 0.2s;
         font-size: 0.9rem;
         background: var(--pos-soft);
+        box-shadow: inset 0 0 0 1px var(--pos-border);
     }
     .pos-nav-exit:hover {
         background: #f0f0f0;
@@ -264,7 +357,7 @@
     .pos-tab-current {
         width: 100%;
         border: 0;
-        border-radius: var(--pos-radius);
+        border-radius: var(--pos-radius-sm);
         background: var(--pos-secondary-soft);
         color: var(--pos-secondary);
         padding: 0.85rem;
@@ -291,7 +384,7 @@
 
     .pos-tab-btn {
         border: 0;
-        border-radius: var(--pos-pill);
+        border-radius: var(--pos-radius-sm);
         padding: 0.4rem 0.85rem;
         font-weight: 800;
         background: var(--pos-secondary);
@@ -340,7 +433,7 @@
 
     .pos-tab-panel-close {
         border: 0;
-        border-radius: var(--pos-pill);
+        border-radius: var(--pos-radius-sm);
         padding: 0.25rem 0.75rem;
         font-weight: 800;
         background: var(--pos-soft);
@@ -370,7 +463,7 @@
         width: 100%;
         min-height: 88px;
         border: 0;
-        border-radius: 14px;
+        border-radius: var(--pos-radius-sm);
         padding: 0.75rem;
         font-weight: 800;
         background: var(--pos-soft);
@@ -383,7 +476,7 @@
     .pos-open-tab-btn.active {
         background: var(--pos-secondary);
         color: #ffffff;
-        box-shadow: var(--pos-shadow-soft);
+        box-shadow: none;
     }
 
     .pos-tab-card-title {
@@ -401,7 +494,7 @@
 
     .pos-tab-close {
         border: 0;
-        border-radius: var(--pos-pill);
+        border-radius: var(--pos-radius-sm);
         padding: 0.45rem 0.75rem;
         font-weight: 900;
         background: var(--pos-accent);
@@ -428,7 +521,7 @@
 
     .pos-payment-method {
         border: 0;
-        border-radius: 14px;
+        border-radius: var(--pos-radius-sm);
         padding: 1rem;
         min-height: 88px;
         background: var(--pos-soft);
@@ -440,13 +533,13 @@
     .pos-payment-method.active {
         background: var(--pos-secondary);
         color: #ffffff;
-        box-shadow: var(--pos-shadow-soft);
+        box-shadow: none;
     }
 
     .pos-payment-summary {
         background: var(--pos-secondary-soft);
         color: var(--pos-secondary);
-        border-radius: var(--pos-radius);
+        border-radius: var(--pos-radius-sm);
         padding: 0.85rem;
         margin-bottom: 1rem;
         font-weight: 800;
@@ -461,9 +554,9 @@
 
     .pos-new-tab input {
         border: 0;
-        border-radius: var(--pos-radius);
+        border-radius: var(--pos-radius-sm);
         padding: 0.5rem 0.6rem;
-        font-weight: 600;
+        font-weight: 700;
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
@@ -473,7 +566,7 @@
     .pos-new-tab button {
         grid-column: span 2;
         border: 0;
-        border-radius: var(--pos-pill);
+        border-radius: var(--pos-radius-sm);
         padding: 0.6rem 1rem;
         font-weight: 900;
         background: var(--pos-accent);
@@ -556,7 +649,8 @@
             <span id="receiptTotal">$0.00</span>
         </div>
 
-        <button class="btn-checkout" onclick="checkout()"> Send </button>
+        <button class="btn-checkout" id="sendOrderButton" onclick="checkout()"> Send </button>
+        <div class="pos-send-feedback" id="sendOrderFeedback" aria-live="polite"></div>
     </div>
 </div>
 
@@ -852,8 +946,14 @@
                 } else {
                     card.onclick = () => addToOrder(p);
                 }
+                const imageHtml = p.imagePath
+                    ? `<img class="product-image" src="${p.imagePath}" alt="${p.name}">`
+                    : `<div class="product-image-placeholder" aria-hidden="true">${p.name.substring(0, 1).toUpperCase()}</div>`;
                 card.innerHTML = `
-                    <div class="product-name">${p.name}</div>
+                    <div>
+                        ${imageHtml}
+                        <div class="product-name">${p.name}</div>
+                    </div>
                     <div class="product-price">${p.canSell ? `$${p.unitPrice.toFixed(2)}` : 'Out of stock'}</div>
                 `;
                 list.appendChild(card);
@@ -895,17 +995,46 @@
             document.getElementById('receiptTotal').innerText = '$' + total.toFixed(2);
         }
 
+        function setSendFeedback(message, type) {
+            const feedback = document.getElementById('sendOrderFeedback');
+            feedback.textContent = message || '';
+            feedback.classList.toggle('error', type === 'error');
+            feedback.classList.toggle('success', type === 'success');
+        }
+
+        function animateSendButton(total) {
+            const button = document.getElementById('sendOrderButton');
+            button.classList.remove('is-busy');
+            button.classList.add('is-sending');
+            button.textContent = 'Sent';
+            setSendFeedback(`Order sent - $${Number(total || 0).toFixed(2)}`, 'success');
+
+            window.setTimeout(() => {
+                button.classList.remove('is-sending');
+                button.textContent = 'Send';
+            }, 950);
+        }
+
         function checkout() {
             if (order.length === 0) {
-                alert("Cart is empty!");
+                setSendFeedback('Cart is empty.', 'error');
                 return;
             }
 
             if (!currentTabId) {
                 openTabPanel();
-                alert("Select a customer tab first.");
+                setSendFeedback('Select a customer tab first.', 'error');
                 return;
             }
+
+            const sendButton = document.getElementById('sendOrderButton');
+            if (sendButton.classList.contains('is-busy') || sendButton.classList.contains('is-sending')) {
+                return;
+            }
+
+            sendButton.classList.add('is-busy');
+            sendButton.textContent = 'Sending';
+            setSendFeedback('', '');
 
             const payload = {
                 customerTabId: currentTabId,
@@ -933,7 +1062,6 @@
                     return response.json();
                 })
                 .then(data => {
-                    alert(`Order charged. Total: $${Number(data.total).toFixed(2)}`);
                     const tab = tabs.find(t => t.id === currentTabId);
                     if (tab) {
                         tab.total = Number(tab.total || 0) + Number(data.total || 0);
@@ -942,9 +1070,12 @@
                     }
                     order = [];
                     renderReceipt();
+                    animateSendButton(data.total);
                 })
                 .catch(err => {
-                    alert(err.message);
+                    sendButton.classList.remove('is-busy');
+                    sendButton.textContent = 'Send';
+                    setSendFeedback(err.message, 'error');
                 });
         }
 

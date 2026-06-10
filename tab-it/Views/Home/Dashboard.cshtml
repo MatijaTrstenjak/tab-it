@@ -415,7 +415,7 @@
         </div>
         <div class="ops-actions">
             <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#openTablesModal">
-                Open Tables (@Model.OpenTabs.Count)
+                Active Tables (@Model.OpenTabs.Count)
             </button>
         </div>
     </header>
@@ -513,7 +513,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div>
-                    <h5 class="modal-title" id="openTablesModalLabel">Open Tables</h5>
+                    <h5 class="modal-title" id="openTablesModalLabel">Active Tables</h5>
                     <div class="table-tab-meta">Choose a table to inspect its current orders.</div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -536,7 +536,7 @@
 
                     @if (!Model.OpenTabs.Any())
                     {
-                        <div class="empty-state">No open table tabs.</div>
+                        <div class="empty-state">No active table tabs.</div>
                     }
                 </div>
             </div>

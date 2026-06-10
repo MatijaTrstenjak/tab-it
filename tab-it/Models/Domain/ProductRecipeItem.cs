@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tab_it.Models.Domain;
 
-public class ProductRecipeItem
+public class ProductRecipeItem : ISoftDeletable
 {
     [Key]
     public int Id { get; set; }
@@ -20,4 +20,6 @@ public class ProductRecipeItem
 
     [Range(0.0001, 999999)]
     public decimal QuantityRequired { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text;
@@ -7,8 +8,10 @@ using tab_it.Repositories.Contracts;
 
 namespace tab_it.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
+        private static readonly string[] AllowedPaymentMethods = { "Cash", "Credit Card", "Debit Card" };
         private readonly IProductCategoryRepository _productCategoryRepository;
         private readonly IProductRepository _productRepository;
         private readonly ICustomerTabRepository _customerTabRepository;
@@ -34,6 +37,7 @@ namespace tab_it.Controllers
 
         [Route("/")]
         [Route("/pocetna")]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
@@ -41,10 +45,8 @@ namespace tab_it.Controllers
 
         public IActionResult Dashboard()
         {
-            var today = DateTime.Today;
             var allOrders = _orderRepository.GetAll()
-                .Where(o => o.OrderedAt.Date == today)
-                .Where(o => o.CustomerTab is not null && o.CustomerTab.Status == TabStatus.Open)
+                .Where(o => o.CustomerTab is not null && o.CustomerTab.Status != TabStatus.Closed)
                 .ToList();
 
             var vm = new DashboardViewModel
@@ -57,7 +59,7 @@ namespace tab_it.Controllers
                 OrdersReady = allOrders.Where(o => o.Status == OrderStatus.Ready).ToList(),
                 OrdersServed = allOrders.Where(o => o.Status == OrderStatus.Served).ToList(),
                 OpenTabs = _customerTabRepository.GetAll()
-                    .Where(t => t.Status == TabStatus.Open)
+                    .Where(t => t.Status != TabStatus.Closed)
                     .OrderBy(t => t.TableNumber)
                     .ToList()
             };
@@ -108,6 +110,11 @@ namespace tab_it.Controllers
                 p.AvailableQuantity,
                 p.ProductCategoryId,
                 p.IsAlcoholic,
+                ImagePath = p.Images
+                    .Where(i => !i.IsDeleted)
+                    .OrderByDescending(i => i.CreatedAt)
+                    .Select(i => i.RelativePath)
+                    .FirstOrDefault(),
                 UsesRecipe = p.RecipeItems.Any(),
                 CanSell = p.RecipeItems.Any()
                     ? p.RecipeItems.All(r => r.InventoryItem != null && r.InventoryItem.QuantityOnHand >= r.QuantityRequired)
@@ -127,6 +134,130 @@ namespace tab_it.Controllers
 
             ViewData["Title"] = "Point of Sale";
             return View();
+        }
+
+        public IActionResult Accounting()
+        {
+            var today = DateTime.Today;
+            var sevenDaysAgo = today.AddDays(-6);
+            var closedTabs = _customerTabRepository.GetAll()
+                .Where(t => t.Status == TabStatus.Closed && t.ClosedAt.HasValue)
+                .OrderByDescending(t => t.ClosedAt)
+                .ToList();
+
+            var todayTabs = closedTabs
+                .Where(t => t.ClosedAt!.Value.Date == today)
+                .ToList();
+
+            var lastSevenDays = Enumerable.Range(0, 7)
+                .Select(offset =>
+                {
+                    var date = sevenDaysAgo.AddDays(offset);
+                    return new DailySalesViewModel
+                    {
+                        Date = date,
+                        Total = closedTabs
+                            .Where(t => t.ClosedAt!.Value.Date == date)
+                            .Sum(GetTabTotal)
+                    };
+                })
+                .ToList();
+
+            var vm = new AccountingViewModel
+            {
+                Today = today,
+                TodaySales = todayTabs.Sum(GetTabTotal),
+                TodayReceipts = todayTabs.Count,
+                SevenDaySales = lastSevenDays.Sum(d => d.Total),
+                LastSevenDays = lastSevenDays,
+                PaymentBreakdown = todayTabs
+                    .GroupBy(t => NormalizedPaymentMethod(t.PaymentMethod))
+                    .Select(g => new PaymentBreakdownViewModel
+                    {
+                        PaymentMethod = g.Key,
+                        Total = g.Sum(GetTabTotal),
+                        Count = g.Count()
+                    })
+                    .OrderByDescending(g => g.Total)
+                    .ToList(),
+                Receipts = closedTabs
+                    .Take(50)
+                    .Select(ToReceiptHistoryItem)
+                    .ToList()
+            };
+
+            ViewData["Title"] = "Accounting";
+            return View(vm);
+        }
+
+        public IActionResult ReceiptDetails(int id)
+        {
+            var tab = _customerTabRepository.GetById(id);
+            if (tab is null || tab.Status != TabStatus.Closed)
+            {
+                return NotFound();
+            }
+
+            ViewData["Title"] = "Receipt Details";
+            return View(new ReceiptDetailsViewModel
+            {
+                TabId = tab.Id,
+                TableNumber = tab.TableNumber,
+                ClosedAt = tab.ClosedAt,
+                PaymentMethod = NormalizedPaymentMethod(tab.PaymentMethod),
+                Total = GetTabTotal(tab),
+                OrderCount = tab.Orders.Count,
+                Orders = tab.Orders.OrderBy(o => o.OrderedAt).ToList(),
+                PaymentOptions = AllowedPaymentMethods
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateReceiptPayment(int id, string paymentMethod)
+        {
+            var tab = _customerTabRepository.GetById(id);
+            if (tab is null || tab.Status != TabStatus.Closed)
+            {
+                return NotFound();
+            }
+
+            var normalized = NormalizeAllowedPaymentMethod(paymentMethod);
+            if (normalized is null)
+            {
+                ModelState.AddModelError(nameof(paymentMethod), "Select a valid payment method.");
+                ViewData["Title"] = "Receipt Details";
+                return View("ReceiptDetails", new ReceiptDetailsViewModel
+                {
+                    TabId = tab.Id,
+                    TableNumber = tab.TableNumber,
+                    ClosedAt = tab.ClosedAt,
+                    PaymentMethod = NormalizedPaymentMethod(tab.PaymentMethod),
+                    Total = GetTabTotal(tab),
+                    OrderCount = tab.Orders.Count,
+                    Orders = tab.Orders.OrderBy(o => o.OrderedAt).ToList(),
+                    PaymentOptions = AllowedPaymentMethods
+                });
+            }
+
+            tab.PaymentMethod = normalized;
+            _customerTabRepository.Update(tab);
+
+            return RedirectToAction(nameof(Accounting));
+        }
+
+        public IActionResult DownloadReceipt(int id)
+        {
+            var tab = _customerTabRepository.GetById(id);
+            if (tab is null || tab.Status != TabStatus.Closed)
+            {
+                return NotFound();
+            }
+
+            var pdf = CreateReceiptPdf(tab, NormalizedPaymentMethod(tab.PaymentMethod));
+            var closedAt = tab.ClosedAt ?? DateTime.Now;
+            var fileName = $"receipt-table-{tab.TableNumber}-{closedAt:yyyyMMdd-HHmm}.pdf";
+            return File(pdf, "application/pdf", fileName);
         }
 
         [HttpPost]
@@ -338,13 +469,13 @@ namespace tab_it.Controllers
             }
 
             var paymentMethod = (request.PaymentMethod ?? string.Empty).Trim();
-            var allowedPayments = new[] { "Cash", "Credit Card", "Debit Card" };
-            if (!allowedPayments.Contains(paymentMethod, StringComparer.OrdinalIgnoreCase))
+            var normalizedPaymentMethod = NormalizeAllowedPaymentMethod(paymentMethod);
+            if (normalizedPaymentMethod is null)
             {
                 return BadRequest(new { message = "Select a valid payment method." });
             }
 
-            paymentMethod = allowedPayments.First(p => p.Equals(paymentMethod, StringComparison.OrdinalIgnoreCase));
+            paymentMethod = normalizedPaymentMethod;
 
             var tab = _customerTabRepository.GetById(request.TabId);
             if (tab is null)
@@ -370,6 +501,7 @@ namespace tab_it.Controllers
 
             tab.Status = TabStatus.Closed;
             tab.ClosedAt = DateTime.Now;
+            tab.PaymentMethod = paymentMethod;
             _customerTabRepository.Update(tab);
 
             var pdf = CreateReceiptPdf(tab, paymentMethod);
@@ -489,6 +621,35 @@ namespace tab_it.Controllers
                 .Replace("\\", "\\\\")
                 .Replace("(", "\\(")
                 .Replace(")", "\\)");
+        }
+
+        private static decimal GetTabTotal(CustomerTab tab)
+        {
+            return tab.Orders.Sum(o => o.Total);
+        }
+
+        private static string NormalizedPaymentMethod(string? paymentMethod)
+        {
+            return NormalizeAllowedPaymentMethod(paymentMethod) ?? "Cash";
+        }
+
+        private static string? NormalizeAllowedPaymentMethod(string? paymentMethod)
+        {
+            var value = (paymentMethod ?? string.Empty).Trim();
+            return AllowedPaymentMethods.FirstOrDefault(p => p.Equals(value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static ReceiptHistoryItemViewModel ToReceiptHistoryItem(CustomerTab tab)
+        {
+            return new ReceiptHistoryItemViewModel
+            {
+                TabId = tab.Id,
+                TableNumber = tab.TableNumber,
+                ClosedAt = tab.ClosedAt,
+                PaymentMethod = NormalizedPaymentMethod(tab.PaymentMethod),
+                Total = GetTabTotal(tab),
+                OrderCount = tab.Orders.Count
+            };
         }
 
         public IActionResult Privacy()

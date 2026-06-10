@@ -1,128 +1,176 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using tab_it.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
+using tab_it.Models.ViewModels;
 
 namespace tab_it.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class RolesController : Controller
 {
-    private readonly IRoleRepository _roleRepository;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public RolesController(IRoleRepository roleRepository)
+    public RolesController(RoleManager<IdentityRole> roleManager)
     {
-        _roleRepository = roleRepository;
+        _roleManager = roleManager;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Roles";
-        return View(_roleRepository.GetAll());
+        return View(await GetRolesAsync());
     }
 
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(string id)
     {
-        var role = _roleRepository.GetById(id);
+        var role = await _roleManager.FindByIdAsync(id);
         if (role is null)
         {
             return NotFound();
         }
 
         ViewData["Title"] = "Role Details";
-        return View(role);
+        return View(ToListItem(role));
     }
 
     public IActionResult Create()
     {
         ViewData["Title"] = "Create Role";
-        return View();
+        return View(new IdentityRoleEditViewModel());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(tab_it.Models.Domain.Role role)
+    public async Task<IActionResult> Create(IdentityRoleEditViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            _roleRepository.Add(role);
+            ViewData["Title"] = "Create Role";
+            return View(model);
+        }
+
+        var result = await _roleManager.CreateAsync(new IdentityRole(model.Name));
+        if (result.Succeeded)
+        {
             return RedirectToAction(nameof(Index));
         }
-        
+
+        AddErrors(result);
         ViewData["Title"] = "Create Role";
-        return View(role);
+        return View(model);
     }
 
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(string id)
     {
-        var role = _roleRepository.GetById(id);
+        var role = await _roleManager.FindByIdAsync(id);
         if (role is null)
         {
             return NotFound();
         }
 
         ViewData["Title"] = "Edit Role";
-        return View(role);
+        return View(new IdentityRoleEditViewModel { Id = role.Id, Name = role.Name ?? string.Empty });
     }
 
     [HttpPost, ActionName("Edit")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditPost(int id)
+    public async Task<IActionResult> EditPost(string id, IdentityRoleEditViewModel model)
     {
-        var role = _roleRepository.GetById(id);
+        if (id != model.Id)
+        {
+            return BadRequest();
+        }
+
+        var role = await _roleManager.FindByIdAsync(id);
         if (role is null)
         {
             return NotFound();
         }
 
-        var updated = await TryUpdateModelAsync(role);
-        if (updated && ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            _roleRepository.Update(role);
+            ViewData["Title"] = "Edit Role";
+            return View("Edit", model);
+        }
+
+        role.Name = model.Name;
+        var result = await _roleManager.UpdateAsync(role);
+        if (result.Succeeded)
+        {
             return RedirectToAction(nameof(Index));
         }
 
+        AddErrors(result);
         ViewData["Title"] = "Edit Role";
-        return View(role);
+        return View("Edit", model);
     }
 
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(string id)
     {
-        var role = _roleRepository.GetById(id);
+        var role = await _roleManager.FindByIdAsync(id);
         if (role is null)
         {
             return NotFound();
         }
 
         ViewData["Title"] = "Delete Role";
-        return View(role);
+        return View(ToListItem(role));
     }
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(string id)
     {
-        var role = _roleRepository.GetById(id);
+        var role = await _roleManager.FindByIdAsync(id);
         if (role is null)
         {
             return NotFound();
         }
 
-        _roleRepository.Delete(id);
-        return RedirectToAction(nameof(Index));
+        var result = await _roleManager.DeleteAsync(role);
+        if (result.Succeeded)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        AddErrors(result);
+        ViewData["Title"] = "Delete Role";
+        return View("Delete", ToListItem(role));
     }
 
     [HttpGet]
-    public IActionResult Search(string? q)
+    public async Task<IActionResult> Search(string? q)
     {
         var query = (q ?? string.Empty).Trim();
-        var roles = _roleRepository.GetAll();
+        var roles = await GetRolesAsync(query);
+        return PartialView("_Rows", roles);
+    }
 
-        if (!string.IsNullOrWhiteSpace(query))
+    private async Task<IReadOnlyList<IdentityRoleListItemViewModel>> GetRolesAsync(string? q = null)
+    {
+        var query = _roleManager.Roles.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(q))
         {
-            roles = roles
-                .Where(r => r.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
-                            || r.Description.Contains(query, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            query = query.Where(r => r.Name != null && r.Name.Contains(q));
         }
 
-        return PartialView("_Rows", roles);
+        return await query
+            .OrderBy(r => r.Name)
+            .Select(r => ToListItem(r))
+            .ToListAsync();
+    }
+
+    private static IdentityRoleListItemViewModel ToListItem(IdentityRole role)
+    {
+        return new IdentityRoleListItemViewModel(role.Id, role.Name ?? string.Empty);
+    }
+
+    private void AddErrors(IdentityResult result)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tab_it.Models.Domain;
 
-public class OrderItem
+public class OrderItem : ISoftDeletable
 {
     [Key]
     public int Id { get; set; }
@@ -18,6 +18,8 @@ public class OrderItem
 
     [StringLength(200)]
     public string ItemNote { get; set; } = string.Empty;
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     [ForeignKey("Order")]
     [Range(1, int.MaxValue)]

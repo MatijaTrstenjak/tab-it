@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tab_it.Models.Domain;
 
-public class User
+public class User : ISoftDeletable
 {
     [Key]
     public int Id { get; set; }
@@ -29,6 +29,8 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public bool IsActive { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     [ForeignKey("Role")]
     [Range(1, int.MaxValue)]

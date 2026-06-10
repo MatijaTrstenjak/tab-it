@@ -1,4 +1,4 @@
-@model IReadOnlyList<User>
+@model IReadOnlyList<tab_it.Models.ViewModels.IdentityUserListItemViewModel>
 
 @section Breadcrumbs {
     <nav aria-label="breadcrumb" class="app-breadcrumbs"><ol><li><a asp-controller="Home" asp-action="Dashboard">Home</a></li><li aria-current="page">Users</li></ol></nav>
@@ -13,11 +13,11 @@
                    placeholder="Search users"
                    data-search-url="@Url.Action("Search")"
                    data-target="#users-table-body" />
-            <a asp-action="Create" class="btn btn-primary ajax-modal-link" data-title="User">Add New</a>
+            <a asp-action="Create" class="btn btn-primary">Add New</a>
         </div>
     </div>
     <table class="table app-table">
-        <thead><tr><th>Id</th><th>Name</th><th>Username</th><th>Email</th><th></th></tr></thead>
+        <thead><tr><th>Email</th><th>Username</th><th>Roles</th><th>OIB</th><th>JMBG</th><th></th></tr></thead>
         <tbody id="users-table-body">
             @await Html.PartialAsync("_Rows", Model)
         </tbody>
